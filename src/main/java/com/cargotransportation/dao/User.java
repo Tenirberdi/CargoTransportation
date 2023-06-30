@@ -1,12 +1,10 @@
 package com.cargotransportation.dao;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -23,11 +21,18 @@ public class User {
     @Column(name = "username")
     private String username;
 
+
+    @Column(name = "password")
+    private String password;
+
     @ManyToOne
     @JoinColumn(name = "role")
     private Role role;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "is_confirmed")
+    private boolean isConfirmed;
 
 }
