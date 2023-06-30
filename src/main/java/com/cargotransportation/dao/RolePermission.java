@@ -11,20 +11,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "transports")
-public class Transport {
+@Table(name = "roles_permissions")
+public class RolePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "model")
-    private String model;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
-    @Column(name = "number")
-    private String number;
-
-    @Column(name = "capacity")
-    private String capacity;
+    @ManyToOne
+    @JoinColumn(name = "permission_id")
+    private Permission permission;
 
 }
