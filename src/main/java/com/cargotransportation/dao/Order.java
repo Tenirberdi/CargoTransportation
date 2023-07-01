@@ -1,15 +1,15 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDateTime;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,48 +22,55 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "carrier_id")
-    private Carrier carrier;
+    private User carrier;
 
     @ManyToOne
     @JoinColumn(name = "shipper_id")
-    private Shipper shipper;
+    private User shipper;
 
     @ManyToOne
     @JoinColumn(name = "broker_id")
-    private Broker broker;
+    private User broker;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "source_address")
-    private String sourceAddress;
+    @Column(name = "price")
+    private Long price;
 
-    @Column(name = "destination_address")
-    private String destinationAddress;
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "source_address_id", referencedColumnName = "id")
+    private Address sourceAddress;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
+    private Address destinationAddress;
 
     @Column(name = "volume")
     private Integer volume;
 
-    @Column(name = "type")
-    private String type;
-
     @ManyToOne
-    @JoinColumn(name = "document_id")
-    private Document document;
+    @JoinColumn(name = "type_id")
+    private ProductType productType;
 
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdDate;
 
-    @Column(name = "taken_date")
+    @Column(name = "taken_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime takenDate;
 
-    @Column(name = "delivered_date")
+    @Column(name = "delivered_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveredDate;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "estimated_delivery_date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime estimatedDeliveryDate;
 
-    @Column(name = "current_location")
-    private String currentLocation;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "current_location_id", referencedColumnName = "id")
+    private Address currentLocation;
 
 }

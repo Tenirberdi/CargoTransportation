@@ -1,5 +1,6 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.TransportType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,14 @@ public class Transport {
 
     @Column(name = "capacity")
     private String capacity;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "type")
+    private TransportType type;
+
+    @ManyToOne
+    @JoinColumn(name = "carrier_id")
+    private User carrier;
+
 
 }

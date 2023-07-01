@@ -1,13 +1,12 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.DocumentType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,9 +21,17 @@ public class Document {
     private String format;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(value = EnumType.STRING)
+    private DocumentType type;
 
     @Column(name = "location")
     private String location;
 
+    @ManyToOne
+    @JoinColumn(columnDefinition = "integer", name = "order_id",nullable = true)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(columnDefinition = "integer", name = "user_id",nullable = true)
+    private User user;
 }

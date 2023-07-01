@@ -2,6 +2,7 @@ package com.cargotransportation.dao;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +22,6 @@ public class User {
     @Column(name = "username")
     private String username;
 
-
     @Column(name = "password")
     private String password;
 
@@ -34,5 +34,8 @@ public class User {
 
     @Column(name = "is_confirmed")
     private boolean isConfirmed;
+
+    @OneToMany(mappedBy = "user")
+    private List<Document> documents;
 
 }

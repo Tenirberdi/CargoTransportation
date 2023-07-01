@@ -1,8 +1,5 @@
 package com.cargotransportation.exception;
 
-import com.cargotransportation.exception.role.RoleNotFound;
-import com.cargotransportation.exception.user.UserIsExists;
-import com.cargotransportation.exception.user.UserNotFound;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,18 +7,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class Handler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<?> userNotFound(UserNotFound e){
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> notFound(NotFoundException e){
         return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
     }
 
-    @ExceptionHandler(UserIsExists.class)
-    public ResponseEntity<?> userIsExists(UserIsExists e){
+    @ExceptionHandler(IsExistsException.class)
+    public ResponseEntity<?> isExists(IsExistsException e){
         return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
     }
 
-    @ExceptionHandler(RoleNotFound.class)
-    public ResponseEntity<?> roleNotFound(RoleNotFound e){
+    @ExceptionHandler(IllegalStatusException.class)
+    public ResponseEntity<?> illegalStatus(IllegalStatusException e){
         return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
     }
 
