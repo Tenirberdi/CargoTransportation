@@ -1,6 +1,6 @@
 package com.cargotransportation.dto;
 
-import com.cargotransportation.dao.Role;
+import com.cargotransportation.dto.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +13,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private String username;
-    private String password;
-    private Role role;
+public class ShipperDto {
+    private UserDto user;
+    private String status;
     private LocalDateTime createdAt;
-    private boolean isConfirmed;
-    private List<DocumentDto> documents;
+//    private List<DocumentDto> documents;
+
 }

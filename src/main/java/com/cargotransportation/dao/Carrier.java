@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -35,8 +36,10 @@ public class Carrier {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "document_id")
-    private Shipper document;
+    @OneToMany(mappedBy = "carrier")
+    private List<Transport> transport;
+
+//    @OneToMany(mappedBy = "carrier")
+//    private Document document;
 
 }
