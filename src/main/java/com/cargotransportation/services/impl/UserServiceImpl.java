@@ -1,7 +1,9 @@
 package com.cargotransportation.services.impl;
 
+import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.User;
 import com.cargotransportation.dto.UserDto;
+import com.cargotransportation.dto.response.UserResponse;
 import com.cargotransportation.exception.user.UserNotFound;
 import com.cargotransportation.repositories.RoleRepository;
 import com.cargotransportation.repositories.UserRepository;
@@ -32,6 +34,14 @@ public class UserServiceImpl implements UserService {
                 .password(userDto.getPassword())
 //                .role()
                 .build();
+    }
+
+    @Override
+    public UserDto findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(
+                "User with id " + id + " not found!",
+                HttpStatus.NOT_FOUND));
+        return Converter.convert(user);
     }
 
     private boolean usernameIsExists(String username){

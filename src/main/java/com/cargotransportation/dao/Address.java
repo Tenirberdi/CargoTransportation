@@ -11,19 +11,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "brokers")
-public class Broker {
+@Table(name = "addresses")
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "city")
+    private String city;
 
-//    @OneToMany(mappedBy = "broker")
-//    @JoinColumn(name = "document_id")
-//    private Document document;
+    @Column(name = "state")
+    private String state;
 
+    @Column(name = "address")
+    private String address;
 }
