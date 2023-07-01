@@ -37,5 +37,4 @@ public class Shipper {
     @ManyToOne
     @JoinColumn(name = "document_id")
     private Document document;
-
 }
