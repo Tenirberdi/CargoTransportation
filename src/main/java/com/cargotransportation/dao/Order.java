@@ -1,5 +1,6 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -35,21 +37,24 @@ public class Order {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "source_address")
-    private String sourceAddress;
 
-    @Column(name = "destination_address")
-    private String destinationAddress;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "source_address_id", referencedColumnName = "id")
+    private Address sourceAddress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
+    private Address destinationAddress;
 
     @Column(name = "volume")
     private Integer volume;
 
-    @Column(name = "type")
-    private String type;
-
     @ManyToOne
-    @JoinColumn(name = "document_id")
-    private Document document;
+    @JoinColumn(name = "type_id")
+    private ProductType productType;
+
+    @OneToMany(mappedBy = "order")
+    private List<Document> documents;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -60,10 +65,15 @@ public class Order {
     @Column(name = "delivered_date")
     private LocalDateTime deliveredDate;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "estimated_delivery_date")
+    private LocalDateTime estimatedDeliveryDate;
 
-    @Column(name = "current_location")
-    private String currentLocation;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "current_location_id", referencedColumnName = "id")
+    private Address currentLocation;
 
 }

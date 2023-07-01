@@ -1,5 +1,6 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.DocumentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +23,25 @@ public class Document {
     private String format;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(value = EnumType.STRING)
+    private DocumentType type;
 
     @Column(name = "location")
     private String location;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+//    @ManyToOne
+//    @JoinColumn(name = "carrier_id")
+//    private Carrier carrier;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "shipper_id")
+//    private Shipper shipper;
 }

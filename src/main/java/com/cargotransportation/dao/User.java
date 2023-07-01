@@ -35,4 +35,7 @@ public class User {
     @Column(name = "is_confirmed")
     private boolean isConfirmed;
 
+    @OneToMany(mappedBy = "user")
+    private List<Document> documents;
+
 }
