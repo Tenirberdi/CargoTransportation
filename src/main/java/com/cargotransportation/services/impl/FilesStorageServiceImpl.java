@@ -56,7 +56,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('files.read')")
+    @PreAuthorize("hasAuthority('file.read')")
     public Resource load(String filename) {
         try {
             Path file = root.resolve(filename);
@@ -73,19 +73,19 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('files.edit')")
+    @PreAuthorize("hasAuthority('file.edit')")
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(root.toFile());
     }
 
     @Override
-    @PreAuthorize("hasAuthority('files.read')")
+    @PreAuthorize("hasAuthority('file.read')")
     public List<FileInfoDto> loadUserFiles(Long userId) {
         return documentService.getUserFiles(userId);
     }
 
     @Override
-    @PreAuthorize("hasAuthority('files.read')")
+    @PreAuthorize("hasAuthority('file.read')")
     public List<FileInfoDto> loadOrderFiles(Long orderId) {
         return documentService.getOrderFiles(orderId);
     }

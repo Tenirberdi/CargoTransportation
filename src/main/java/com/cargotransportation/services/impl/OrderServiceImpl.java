@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('orders.read')")
+    @PreAuthorize("hasAuthority('order.read')")
     public OrderDto findById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(()->new NotFoundException(
                 "Order with id '" + id + "' not found!"

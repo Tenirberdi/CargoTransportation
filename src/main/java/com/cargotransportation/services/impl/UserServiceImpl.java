@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('users.read')")
+    @PreAuthorize("hasAuthority('user.read')")
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "User with id " + id + " not found!"));
@@ -80,12 +80,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('users.read')")
+    @PreAuthorize("hasAuthority('user.read')")
     public UserDto findByUsername(String username) {
         return Converter.convert(userRepository.findByUsername(username));
     }
 
-    private boolean ifUsernameExists(String username){
+    private boolean ifUsernameExists(String username) {
         return userRepository.findByUsername(username) != null;
     }
 
