@@ -1,4 +1,4 @@
-package com.cargotransportation.dto;
+package com.cargotransportation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BrokerDto {
-    private UserDto user;
+public class ResponseMessage {
+    private String message;
 }

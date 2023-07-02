@@ -1,11 +1,15 @@
 package com.cargotransportation.services;
 
+import com.cargotransportation.constants.DocumentType;
 import com.cargotransportation.dto.DocumentDto;
+import com.cargotransportation.dto.FileInfoDto;
 import com.cargotransportation.dto.requests.CreateDocumentRequest;
 
 import java.util.List;
 
 public interface DocumentService {
-    DocumentDto create(CreateDocumentRequest request,Long orderId,Long userId);
-    List<DocumentDto> saveAll(List<CreateDocumentRequest> requests,Long orderId,Long userId);
+    DocumentDto save(DocumentDto documentDto);
+    List<FileInfoDto> getUserFiles(Long userId);
+    List<FileInfoDto> getOrderFiles(Long orderId);
+    List<DocumentType> getDocumentTypes();
 }

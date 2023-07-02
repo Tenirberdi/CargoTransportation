@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
+public class SignInRequest {
     private String username;
     private String password;
-    private String role;
-    private String fio;
-    private String address;
-    private String phone;
-    private Integer age;
 }

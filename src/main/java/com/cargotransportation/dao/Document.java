@@ -19,15 +19,15 @@ public class Document {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "format")
     private String format;
 
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     private DocumentType type;
-
-    @Column(name = "location")
-    private String location;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -37,11 +37,4 @@ public class Document {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @ManyToOne
-//    @JoinColumn(name = "carrier_id")
-//    private Carrier carrier;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "shipper_id")
-//    private Shipper shipper;
 }

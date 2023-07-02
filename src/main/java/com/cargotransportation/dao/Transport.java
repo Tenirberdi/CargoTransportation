@@ -26,15 +26,15 @@ public class Transport {
     private String number;
 
     @Column(name = "capacity")
-    private String capacity;
+    private Integer capacityInTons;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "type")
     private TransportType type;
 
     @ManyToOne
-    @JoinColumn(name = "carrier_id")
-    private Carrier carrier;
+    @JoinColumn(name = "user_id")
+    private User carrier;
 
 
 }

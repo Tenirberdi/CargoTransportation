@@ -15,20 +15,15 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateOrderRequest {
     private Long shipperId;
-
     private String sourceCity;
     private String sourceState;
     private String sourceAddress;
-
     private String destinationCity;
     private String destinationState;
     private String destinationAddress;
-
     private Integer volume;
     private String productType;
-
     private List<CreateDocumentRequest> documents;
-
     private LocalDateTime estimatedDeliveryDate;
 
 
