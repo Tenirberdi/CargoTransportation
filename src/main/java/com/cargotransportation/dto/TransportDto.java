@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class TransportDto {
     private String model;
     private String number;
-    private String capacity;
+    private Integer capacityInTons;
     @Enumerated(value = EnumType.STRING)
     private TransportType type;
-    private CarrierDto carrier;
+    private Long carrierId;
 }

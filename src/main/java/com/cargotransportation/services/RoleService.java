@@ -2,6 +2,10 @@ package com.cargotransportation.services;
 
 import com.cargotransportation.dto.RoleDto;
 
+import java.util.List;
+
 public interface RoleService {
-    RoleDto findByName(String name);
+    String findByName(String name);
+
+    List<String> getRoles();
 }

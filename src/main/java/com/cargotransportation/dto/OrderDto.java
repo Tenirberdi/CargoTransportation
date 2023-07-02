@@ -1,10 +1,6 @@
 package com.cargotransportation.dto;
 
 import com.cargotransportation.constants.OrderStatus;
-import com.cargotransportation.dao.Broker;
-import com.cargotransportation.dao.Carrier;
-import com.cargotransportation.dao.Shipper;
-import com.cargotransportation.dto.response.UserResponse;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -20,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    private ShipperDto shipper;
-    private BrokerDto broker;
-    private CarrierDto carrier;
+    private Long shipperId;
+    private Long brokerId;
+    private Long carrierId;
     private AddressDto sourceAddress;
     private AddressDto destinationAddress;
     private Integer volume;

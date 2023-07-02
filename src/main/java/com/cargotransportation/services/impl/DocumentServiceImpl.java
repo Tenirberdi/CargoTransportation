@@ -1,60 +1,69 @@
 package com.cargotransportation.services.impl;
 
-import com.cargotransportation.converter.Converter;
+import com.cargotransportation.constants.DocumentType;
 import com.cargotransportation.dao.Document;
-import com.cargotransportation.dao.Order;
-import com.cargotransportation.dao.User;
 import com.cargotransportation.dto.DocumentDto;
+import com.cargotransportation.dto.FileInfoDto;
 import com.cargotransportation.dto.requests.CreateDocumentRequest;
-import com.cargotransportation.exception.document.DocumentException;
+import com.cargotransportation.exception.FileLoadException;
 import com.cargotransportation.repositories.DocumentRepository;
+import com.cargotransportation.repositories.OrderRepository;
+import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.DocumentService;
-import com.cargotransportation.services.OrderService;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
-
     private final DocumentRepository documentRepository;
-    private final UserService userService;
-    private final OrderService orderService;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     @Override
-    public DocumentDto create(CreateDocumentRequest request,Long orderId,Long userId) {
-
-        User user = Converter.convert(userService.findById(userId));
-        Order order = Converter.convert(orderService.findById(orderId));
-
-        if(user == null && order == null){
-            throw new DocumentException("User and order is null", HttpStatus.BAD_REQUEST);
+    public DocumentDto save(DocumentDto documentDto) {
+        if(documentDto.getUserId() == null && documentDto.getOrderId() == null ||
+                documentDto.getUserId() != null && documentDto.getOrderId() != null) {
+            throw new FileLoadException("Only one of userId and orderId must be not null");
         }
 
-        return Converter.convert(
-                Document.builder()
-                        .location(request.getLocation())
-                        .type(request.getType())
-                        .format(request.getFormat())
-                        .order(order)
-                        .user(user)
-                        .build()
-        );
+        documentRepository.save(Document.builder()
+                .format(documentDto.getFormat())
+                .type(documentDto.getType())
+                .name(documentDto.getName())
+                .order(documentDto.getOrderId() == null?
+                        null:orderRepository.findById(documentDto.getOrderId()).get())
+                .user(documentDto.getUserId() == null?
+                        null:userRepository.findById(documentDto.getUserId()).get()).build());
+        return documentDto;
     }
 
     @Override
-    public List<DocumentDto> saveAll(List<CreateDocumentRequest> requests,Long orderId,Long userId) {
-        List<DocumentDto> documents = new ArrayList<>();
-        for(CreateDocumentRequest request:requests){
-            documents.add(create(request,orderId,userId));
-        }
-        return documents;
+    @PreAuthorize("hasAuthority('files.read')")
+    public List<FileInfoDto> getUserFiles(Long userId) {
+        return documentRepository.getUsersFiles(userId).stream().map(fileInfo -> FileInfoDto.builder()
+                .name(fileInfo.getName())
+                .documentType(fileInfo.getType()).build()).collect(Collectors.toList());
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('files.read')")
+    public List<FileInfoDto> getOrderFiles(Long orderId) {
+        return documentRepository.getOrderFiles(orderId).stream().map(fileInfo -> FileInfoDto.builder()
+                .name(fileInfo.getName())
+                .documentType(fileInfo.getType()).build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DocumentType> getDocumentTypes() {
+        return Arrays.asList(DocumentType.values());
     }
 
 }

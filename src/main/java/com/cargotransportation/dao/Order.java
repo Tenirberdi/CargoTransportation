@@ -24,19 +24,18 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "carrier_id")
-    private Carrier carrier;
+    private User carrier;
 
     @ManyToOne
     @JoinColumn(name = "shipper_id")
-    private Shipper shipper;
+    private User shipper;
 
     @ManyToOne
     @JoinColumn(name = "broker_id")
-    private Broker broker;
+    private User broker;
 
     @Column(name = "name")
     private String name;
-
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "source_address_id", referencedColumnName = "id")

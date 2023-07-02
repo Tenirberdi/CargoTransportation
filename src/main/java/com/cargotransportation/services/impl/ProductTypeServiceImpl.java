@@ -3,7 +3,7 @@ package com.cargotransportation.services.impl;
 import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.ProductType;
 import com.cargotransportation.dto.ProductTypeDto;
-import com.cargotransportation.exception.productType.ProductTypeNotFound;
+import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.ProductTypeRepository;
 import com.cargotransportation.services.ProductTypeService;
 import lombok.AllArgsConstructor;
@@ -21,9 +21,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         ProductType productType = productTypeRepository.
                 findByName(name);
         if(productType == null){
-            throw new ProductTypeNotFound(
-                    "Product type with name '" + name + "' not found!",
-                    HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                    "Product type with name '" + name + "' not found!"
             );
         }
         return Converter.convert(productType);
