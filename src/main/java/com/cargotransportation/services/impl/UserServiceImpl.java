@@ -2,27 +2,26 @@ package com.cargotransportation.services.impl;
 
 import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.Role;
-import com.cargotransportation.converter.Converter;
-import com.cargotransportation.dao.Role;
 import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dao.User;
+import com.cargotransportation.dto.TransportDto;
 import com.cargotransportation.dto.UserDto;
 import com.cargotransportation.dto.requests.CreateCarrierRequest;
 import com.cargotransportation.dto.requests.CreateUserRequest;
 import com.cargotransportation.exception.NotFoundException;
-import com.cargotransportation.exception.IsExistsException;
-import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.RoleRepository;
 import com.cargotransportation.repositories.TransportRepository;
 import com.cargotransportation.repositories.UserRepository;
+import com.cargotransportation.services.AuthService;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TransportRepository transportRepository;
+    private final AuthService authService;
 
     @Override
     public Long save(UserDto userDto) {
@@ -88,6 +88,14 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAuthority('user.read')")
     public UserDto findByUsername(String username) {
         return Converter.convert(userRepository.findByUsername(username));
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('user.read')")
+    public List<TransportDto> getTransports() {
+        return transportRepository.getTransportByCarrierId(
+                findByUsername(authService.getCurrentUserUsername()).getId()
+        ).stream().map(Converter::convert).collect(Collectors.toList());
     }
 
     @Override
