@@ -1,10 +1,11 @@
 package com.cargotransportation.services.impl;
 
-import com.cargotransportation.constants.AddressType;
 import com.cargotransportation.constants.OrderStatus;
 import com.cargotransportation.converter.Converter;
-import com.cargotransportation.dao.*;
-import com.cargotransportation.dto.DocumentDto;
+import com.cargotransportation.dao.Address;
+import com.cargotransportation.dao.Order;
+import com.cargotransportation.dao.ProductType;
+import com.cargotransportation.dao.User;
 import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateAddressRequest;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
@@ -16,9 +17,9 @@ import com.cargotransportation.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,11 +32,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final AddressService addressService;
     private final ProductTypeService productTypeService;
-    private final DocumentService documentService;
     private final UserService userService;
 
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto create(CreateOrderRequest request) {
         Address sourceAddress = Converter.convert(addressService.save(
                 CreateAddressRequest.builder()
@@ -73,11 +74,11 @@ public class OrderServiceImpl implements OrderService {
                 .build();
         orderRepository.saveAndFlush(order);
 
-        OrderDto orderDto = Converter.convert(order);
         return Converter.convert(order);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.read')")
     public OrderDto findById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(()->new NotFoundException(
                 "Order with id '" + id + "' not found!"
@@ -86,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto takeByOrderIdAndCarrierId(Long orderId, Long carrierId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -107,6 +109,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto acceptByOrderIdAndBrokerId(Long orderId,Long brokerId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -127,6 +130,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto setProductTakenDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -145,6 +149,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto setDeliveredDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -163,6 +168,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto rejectById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -180,6 +186,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @PreAuthorize("hasAuthority('order.read')")
     public List<OrderDto> findAllByStatus(OrderStatus status) {
         return orderRepository.findAll().stream().map(Converter::convert).collect(Collectors.toList());
     }
@@ -187,6 +194,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @PreAuthorize("hasAuthority('order.read')")
     public List<OrderDto> findAllWithFilter(
             Long minPrice, Long maxPrice,
             String sourceCity, String sourceState, String destinationCity, String destinationState,

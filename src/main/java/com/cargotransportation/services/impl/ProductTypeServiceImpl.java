@@ -7,7 +7,7 @@ import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.ProductTypeRepository;
 import com.cargotransportation.services.ProductTypeService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +17,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     private final ProductTypeRepository productTypeRepository;
 
     @Override
+    @PreAuthorize("hasAuthority('productType.read')")
     public ProductTypeDto findByName(String name) {
         ProductType productType = productTypeRepository.
                 findByName(name);
