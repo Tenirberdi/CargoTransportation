@@ -1,11 +1,13 @@
 package com.cargotransportation.services;
 
 import com.cargotransportation.dto.UserDto;
-import com.cargotransportation.dto.response.UserResponse;
+import com.cargotransportation.dto.requests.CreateCarrierRequest;
+import com.cargotransportation.dto.requests.CreateUserRequest;
 
 public interface UserService {
-    void save(UserDto userDto);
+    Long save(UserDto userDto);
+    Long save(CreateCarrierRequest request);
+    Long save(CreateUserRequest request);
     UserDto findById(Long id);
-    UserDto findUserByRoleAndId(String roleName,Long id);
-
+    UserDto findByUsername(String username);
 }

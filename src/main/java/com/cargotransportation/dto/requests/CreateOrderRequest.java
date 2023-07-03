@@ -1,6 +1,5 @@
 package com.cargotransportation.dto.requests;
 
-import com.cargotransportation.constants.AddressType;
 import com.cargotransportation.constants.DocumentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

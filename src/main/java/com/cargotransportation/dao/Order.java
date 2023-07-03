@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -52,6 +53,11 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "type_id")
     private ProductType productType;
+    @JoinColumn(name = "type_id")
+    private ProductType productType;
+
+    @OneToMany(mappedBy = "order")
+    private List<Document> documents;
 
     @Column(name = "created_date", updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdDate;

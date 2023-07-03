@@ -1,5 +1,7 @@
 package com.cargotransportation.exception;
 
+import com.cargotransportation.dto.response.ResponseMessage;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,13 +10,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class Handler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> notFound(NotFoundException e){
-        return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
+    public ResponseEntity<?> userNotFound(NotFoundException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(IsExistsException.class)
-    public ResponseEntity<?> isExists(IsExistsException e){
-        return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<?> authException(AuthException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> authenticationException(AuthenticationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FileLoadException.class)
+    public ResponseEntity<?> FileLoadException(FileLoadException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IllegalStatusException.class)
@@ -22,4 +34,8 @@ public class Handler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getMessage(),e.getHttpStatus());
     }
 
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<?> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File too large!"));
+    }
 }

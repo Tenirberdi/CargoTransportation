@@ -16,9 +16,11 @@ import java.util.List;
 public class UserDto {
     private Long id;
     private String username;
-    private String password;
-    private Role role;
+    private String role;
     private LocalDateTime createdAt;
     private boolean isConfirmed;
-    private List<DocumentDto> documents;
+    private String fio;
+    private Integer age;
+    private String address;
+    private String phone;
 }

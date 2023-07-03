@@ -17,6 +17,9 @@ public class Document {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "format")
     private String format;
 
@@ -24,8 +27,13 @@ public class Document {
     @Enumerated(value = EnumType.STRING)
     private DocumentType type;
 
-    @Column(name = "location")
-    private String location;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(columnDefinition = "integer", name = "order_id",nullable = true)

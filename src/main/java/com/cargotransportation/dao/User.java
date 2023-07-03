@@ -19,7 +19,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
@@ -30,12 +30,23 @@ public class User {
     private Role role;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "is_confirmed")
-    private boolean isConfirmed;
+    private boolean isConfirmed = false;
+
+    @Column(name = "fio")
+    private String fio;
+
+    @Column(name = "age")
+    private Integer age;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
 
     @OneToMany(mappedBy = "user")
     private List<Document> documents;
-
 }

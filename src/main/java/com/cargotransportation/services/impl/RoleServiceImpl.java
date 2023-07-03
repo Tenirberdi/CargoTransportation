@@ -7,6 +7,9 @@ import com.cargotransportation.services.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
@@ -14,8 +17,12 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public RoleDto findByName(String name) {
+    public String findByName(String name) {
+        return roleRepository.findByName(name).getName();
+    }
 
-        return null;
+    @Override
+    public List<String> getRoles() {
+        return roleRepository.findAll().stream().map(Role::getName).collect(Collectors.toList());
     }
 }
