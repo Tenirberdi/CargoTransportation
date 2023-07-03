@@ -22,8 +22,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
                 findByName(name);
         if(productType == null){
             throw new NotFoundException(
-                    "Product type with name '" + name + "' not found!",
-                    HttpStatus.NOT_FOUND
+                    "Product type with name '" + name + "' not found!"
             );
         }
         return Converter.convert(productType);

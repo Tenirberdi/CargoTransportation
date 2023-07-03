@@ -17,9 +17,12 @@ import com.cargotransportation.repositories.TransportRepository;
 import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -88,20 +91,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(
-                "User with id " + id + " not found!",
-                HttpStatus.NOT_FOUND));
-        return Converter.convert(user);
-    }
-
-    @Override
     public UserDto findUserByRoleAndId(String roleName,Long id) {
         Role role = roleRepository.findByName(roleName);
         User user = userRepository.findByRoleAndId(role,id);
         if(user == null) throw new NotFoundException(
-                role.getName()+" with id " + id + " not found!",
-                HttpStatus.NOT_FOUND);
+                role.getName()+" with id " + id + " not found!");
         return Converter.convert(user);
     }
 

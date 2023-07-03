@@ -53,8 +53,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "type_id")
     private ProductType productType;
-    @JoinColumn(name = "type_id")
-    private ProductType productType;
 
     @OneToMany(mappedBy = "order")
     private List<Document> documents;

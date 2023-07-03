@@ -28,14 +28,6 @@ public class Document {
     private DocumentType type;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
     @JoinColumn(columnDefinition = "integer", name = "order_id",nullable = true)
     private Order order;
 

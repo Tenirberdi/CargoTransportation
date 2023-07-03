@@ -10,4 +10,5 @@ public interface UserService {
     Long save(CreateUserRequest request);
     UserDto findById(Long id);
     UserDto findByUsername(String username);
+    UserDto findUserByRoleAndId(String roleName,Long id);
 }

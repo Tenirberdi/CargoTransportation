@@ -31,7 +31,7 @@ public class Converter {
                 .id(dto.getId())
                 .model(dto.getModel())
                 .number(dto.getNumber())
-                .capacity(dto.getCapacity())
+                .capacityInTons(dto.getCapacityInTons())
                 .type(dto.getType())
                 .carrier(Converter.convert(dto.getCarrier()))
                 .build();
@@ -43,7 +43,7 @@ public class Converter {
                 .id(entity.getId())
                 .model(entity.getModel())
                 .number(entity.getNumber())
-                .capacity(entity.getCapacity())
+                .capacityInTons(entity.getCapacityInTons())
                 .type(entity.getType())
                 .carrier(Converter.convert(entity.getCarrier()))
                 .build();
@@ -87,25 +87,15 @@ public class Converter {
                 .build();
     }
 
-    public static Document convert(DocumentDto dto){
-        if(dto == null)  return null;
-        return Document.builder()
-                .id(dto.getId())
-                .order(Converter.convert(dto.getOrder()))
-                .format(dto.getFormat())
-                .type(dto.getType())
-                .location(dto.getLocation())
-                .build();
-    }
-
     public static DocumentDto convert(Document entity){
         if(entity == null)  return null;
         return DocumentDto.builder()
                 .id(entity.getId())
-                .order(Converter.convert(entity.getOrder()))
+                .orderId(entity.getOrder().getId())
+                .name(entity.getName())
                 .format(entity.getFormat())
                 .type(entity.getType())
-                .location(entity.getLocation())
+                .userId(entity.getUser().getId())
                 .build();
     }
 
@@ -114,11 +104,13 @@ public class Converter {
         return User.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
-                .password(dto.getPassword())
-                .role(dto.getRole())
+                .role(Role.builder().name(dto.getRole()).build())
                 .createdAt(dto.getCreatedAt())
                 .isConfirmed(dto.isConfirmed())
-                .documents(dto.getDocuments().stream().map(Converter::convert).collect(Collectors.toList()))
+                .fio(dto.getFio())
+                .age(dto.getAge())
+                .address(dto.getAddress())
+                .phone(dto.getPhone())
                 .build();
     }
 
@@ -127,11 +119,13 @@ public class Converter {
         return UserDto.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
-                .password(entity.getPassword())
-                .role(entity.getRole())
+                .role(entity.getRole().getName())
                 .createdAt(entity.getCreatedAt())
                 .isConfirmed(entity.isConfirmed())
-                .documents(entity.getDocuments().stream().map(Converter::convert).collect(Collectors.toList()))
+                .fio(entity.getFio())
+                .age(entity.getAge())
+                .address(entity.getAddress())
+                .phone(entity.getPhone())
                 .build();
     }
 

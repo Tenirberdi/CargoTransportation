@@ -16,7 +16,7 @@ public class TransportDto {
     private Long id;
     private String model;
     private String number;
-    private String capacity;
+    private Integer capacityInTons;
     @Enumerated(value = EnumType.STRING)
     private TransportType type;
     private UserDto carrier;

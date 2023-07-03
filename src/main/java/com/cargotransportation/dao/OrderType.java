@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "order_types")
 public class OrderType {
-
     @Id
     @Column(name = "name")
     private String name;

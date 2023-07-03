@@ -33,15 +33,6 @@ public class Transport {
     private TransportType type;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User carrier;
-
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "type")
-    private TransportType type;
-
-    @ManyToOne
     @JoinColumn(name = "carrier_id")
     private User carrier;
 

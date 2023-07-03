@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Product type found: " + productType);
 
         Order order = Order.builder()
-                .shipper(Converter.convert(userService.findUserByRoleAndId("SHIPPER",request.getShipperId())))
+                .shipper(Converter.convert(userService.findUserByRoleAndId("ROLE_SHIPPER",request.getShipperId())))
                 .sourceAddress(sourceAddress)
                 .carrier(null)
                 .broker(null)
@@ -80,8 +80,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto findById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(()->new NotFoundException(
-                "Order with id '" + id + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + id + "' not found!"
         ));
         return Converter.convert(order);
     }
@@ -89,8 +88,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto takeByOrderIdAndCarrierId(Long orderId, Long carrierId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
-                "Order with id '" + orderId + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + orderId + "' not found!"
         ));
 
         isOrderRejected(order);
@@ -100,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
                 HttpStatus.BAD_REQUEST
                 );
 
-        User carrier = Converter.convert(userService.findUserByRoleAndId("CARRIER",carrierId));
+        User carrier = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",carrierId));
         order.setCarrier(carrier);
 
         order.setStatus(OrderStatus.TAKEN);
@@ -111,10 +109,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto acceptByOrderIdAndBrokerId(Long orderId,Long brokerId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
-                "Order with id '" + orderId + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + orderId + "' not found!"
         ));
-        User user = Converter.convert(userService.findUserByRoleAndId("BROKER",brokerId));
+        User user = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",brokerId));
 
         isOrderRejected(order);
 
@@ -132,8 +129,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto setProductTakenDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
-                "Order with id '" + orderId + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + orderId + "' not found!"
         ));
         isOrderRejected(order);
         if(order.getStatus() != OrderStatus.ACCEPTED)
@@ -151,8 +147,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto setDeliveredDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
-                "Order with id '" + orderId + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + orderId + "' not found!"
         ));
         isOrderRejected(order);
         if(order.getStatus() != OrderStatus.SHIPPED)
@@ -170,8 +165,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto rejectById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
-                "Order with id '" + orderId + "' not found!",
-                HttpStatus.NOT_FOUND
+                "Order with id '" + orderId + "' not found!"
         ));
         if(order.getStatus() != OrderStatus.TAKEN) {
             throw new IllegalStatusException(
