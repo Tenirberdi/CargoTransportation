@@ -1,5 +1,6 @@
 package com.cargotransportation.dto.requests;
 
+import com.cargotransportation.constants.AddressType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,8 @@ public class CreateAddressRequest {
     private String state;
 
     private String address;
+
+    private String coordinates;
+
+    private AddressType type;
 }

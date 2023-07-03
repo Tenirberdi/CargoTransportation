@@ -2,17 +2,22 @@ package com.cargotransportation.services.impl;
 
 import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.Role;
+import com.cargotransportation.converter.Converter;
+import com.cargotransportation.dao.Role;
 import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dao.User;
 import com.cargotransportation.dto.UserDto;
 import com.cargotransportation.dto.requests.CreateCarrierRequest;
 import com.cargotransportation.dto.requests.CreateUserRequest;
 import com.cargotransportation.exception.NotFoundException;
+import com.cargotransportation.exception.IsExistsException;
+import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.RoleRepository;
 import com.cargotransportation.repositories.TransportRepository;
 import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,6 +88,15 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAuthority('user.read')")
     public UserDto findByUsername(String username) {
         return Converter.convert(userRepository.findByUsername(username));
+    }
+
+    @Override
+    public UserDto findUserByRoleAndId(String roleName,Long id) {
+        Role role = roleRepository.findByName(roleName);
+        User user = userRepository.findByRoleAndId(role,id);
+        if(user == null) throw new NotFoundException(
+                role.getName()+" with id " + id + " not found!");
+        return Converter.convert(user);
     }
 
     private boolean ifUsernameExists(String username) {

@@ -2,13 +2,11 @@ package com.cargotransportation.dao;
 
 import com.cargotransportation.constants.DocumentType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,11 +28,10 @@ public class Document {
     private DocumentType type;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(columnDefinition = "integer", name = "order_id",nullable = true)
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(columnDefinition = "integer", name = "user_id",nullable = true)
     private User user;
-
 }

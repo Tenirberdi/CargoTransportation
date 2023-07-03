@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -16,14 +17,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    private Long shipperId;
-    private Long brokerId;
-    private Long carrierId;
+    private Long id;
+    private UserDto shipper;
+    private UserDto broker;
+    private UserDto carrier;
     private AddressDto sourceAddress;
     private AddressDto destinationAddress;
     private Integer volume;
+    private Long price;
     private ProductTypeDto productType;
-    private List<DocumentDto> documents;
     private LocalDateTime createdDate;
     private LocalDateTime takenDate;
     private LocalDateTime deliveredDate;

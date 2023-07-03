@@ -2,16 +2,15 @@ package com.cargotransportation.dao;
 
 import com.cargotransportation.constants.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -37,11 +36,14 @@ public class Order {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "price")
+    private Long price;
+
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "source_address_id", referencedColumnName = "id")
     private Address sourceAddress;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
     private Address destinationAddress;
 
@@ -55,16 +57,16 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<Document> documents;
 
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdDate;
 
-    @Column(name = "taken_date")
+    @Column(name = "taken_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime takenDate;
 
-    @Column(name = "delivered_date")
+    @Column(name = "delivered_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveredDate;
 
-    @Column(name = "estimated_delivery_date")
+    @Column(name = "estimated_delivery_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime estimatedDeliveryDate;
 
     @Column(name = "status")

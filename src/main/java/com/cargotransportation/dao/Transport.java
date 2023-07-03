@@ -33,7 +33,7 @@ public class Transport {
     private TransportType type;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "carrier_id")
     private User carrier;
 
 

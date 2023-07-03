@@ -2,8 +2,9 @@ package com.cargotransportation.constants;
 
 public enum OrderStatus {
     WAITING,
-    ACCEPTED,
+    TAKEN,
     SHIPPED,
     DELIVERED,
-    REJECTED
+    REJECTED,
+    ACCEPTED
 }

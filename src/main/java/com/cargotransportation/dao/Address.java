@@ -1,5 +1,6 @@
 package com.cargotransportation.dao;
 
+import com.cargotransportation.constants.AddressType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,4 +27,12 @@ public class Address {
 
     @Column(name = "address")
     private String address;
+
+    @Column(name = "coordinates")
+    private String coordinates;
+
+    @Column(name = "type")
+    @Enumerated(value = EnumType.STRING)
+    private AddressType type;
+
 }
