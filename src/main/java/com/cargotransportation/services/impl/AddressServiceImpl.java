@@ -8,6 +8,7 @@ import com.cargotransportation.repositories.AddressRepository;
 import com.cargotransportation.services.AddressService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
     @Override
+    @PreAuthorize("hasAuthority('address.edit')")
     public AddressDto save(CreateAddressRequest request) {
         Address address = Address.builder()
                 .city(request.getCity())
