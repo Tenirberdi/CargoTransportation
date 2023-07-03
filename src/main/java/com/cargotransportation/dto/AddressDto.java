@@ -20,7 +20,8 @@ public class AddressDto {
     private String state;
 
     private String address;
-    private String coordinates;
+    private double longitude;
+    private double latitude;
     @Enumerated(value = EnumType.STRING)
     private AddressType type;
 }

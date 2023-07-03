@@ -17,7 +17,8 @@ public class CreateAddressRequest {
 
     private String address;
 
-    private String coordinates;
+    private double longitude;
+    private double latitude;
 
     private AddressType type;
 }
