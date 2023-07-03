@@ -32,9 +32,14 @@ public class Transport {
     @Column(name = "type")
     private TransportType type;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "carrier_id")
     private User carrier;
+
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    private CarrierCompany carrierCompany;
 
 
 }

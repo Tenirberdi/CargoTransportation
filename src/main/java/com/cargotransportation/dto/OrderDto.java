@@ -1,6 +1,7 @@
 package com.cargotransportation.dto;
 
 import com.cargotransportation.constants.OrderStatus;
+import com.cargotransportation.dao.OrderType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,6 @@ public class OrderDto {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
     private AddressDto currentLocation;
+    @Enumerated(value = EnumType.STRING)
+    private OrderType orderType;
 }

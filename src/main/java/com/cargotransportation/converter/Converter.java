@@ -142,6 +142,7 @@ public class Converter {
                 .destinationAddress(Converter.convert(dto.getDestinationAddress()))
                 .sourceAddress(Converter.convert(dto.getSourceAddress()))
                 .volume(dto.getVolume())
+                .orderType(dto.getOrderType())
                 .price(dto.getPrice())
                 .productType(Converter.convert(dto.getProductType()))
                 .createdDate(dto.getCreatedDate())
@@ -164,6 +165,7 @@ public class Converter {
                 .sourceAddress(Converter.convert(entity.getSourceAddress()))
                 .volume(entity.getVolume())
                 .price(entity.getPrice())
+                .orderType(entity.getOrderType())
                 .productType(Converter.convert(entity.getProductType()))
                 .createdDate(entity.getCreatedDate())
                 .takenDate(entity.getTakenDate())
@@ -171,6 +173,43 @@ public class Converter {
                 .estimatedDeliveryDate(entity.getEstimatedDeliveryDate())
                 .status(entity.getStatus())
                 .currentLocation(Converter.convert(entity.getCurrentLocation()))
+                .build();
+    }
+
+    public static CarrierCompany convert(CarrierCompanyDto dto){
+        if(dto == null) return null;
+        return CarrierCompany.builder()
+                .id(dto.getId())
+                .username(dto.getUsername())
+                .role(Role.builder().name(dto.getRole()).build())
+                .createdAt(dto.getCreatedAt())
+                .isConfirmed(dto.isConfirmed())
+                .fio(dto.getFio())
+                .age(dto.getAge())
+                .address(dto.getAddress())
+                .companyAddress(Converter.convert(dto.getCompanyAddressDto()))
+                .companyName(dto.getCompanyName())
+                .pricePerKm(dto.getPricePerKm())
+                .pricePerLb(dto.getPricePerLb())
+                .build();
+    }
+
+
+    public static CarrierCompanyDto convert(CarrierCompany entity){
+        if(entity == null) return null;
+        return CarrierCompanyDto.builder()
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .role(entity.getRole().getName())
+                .createdAt(entity.getCreatedAt())
+                .isConfirmed(entity.isConfirmed())
+                .fio(entity.getFio())
+                .age(entity.getAge())
+                .address(entity.getAddress())
+                .phone(entity.getPhone())
+                .pricePerKm(entity.getPricePerKm())
+                .pricePerLb(entity.getPricePerLb())
+                .companyAddressDto(Converter.convert(entity.getCompanyAddress()))
                 .build();
     }
 

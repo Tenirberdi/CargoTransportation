@@ -77,4 +77,8 @@ public class Order {
     @JoinColumn(name = "current_location_id", referencedColumnName = "id")
     private Address currentLocation;
 
+    @Column(name = "type")
+    @Enumerated(value = EnumType.STRING)
+    private OrderType orderType;
+
 }
