@@ -25,7 +25,8 @@ public class AddressServiceImpl implements AddressService {
                 .city(request.getCity())
                 .address(request.getAddress())
                 .state(request.getState())
-                .coordinates(request.getCoordinates())
+                .longitude(request.getLongitude())
+                .latitude(request.getLatitude())
                 .build();
         log.info("Address created: " + address);
         return Converter.convert(addressRepository.save(

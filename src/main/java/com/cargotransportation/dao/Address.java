@@ -31,6 +31,12 @@ public class Address {
     @Column(name = "coordinates")
     private String coordinates;
 
+    @Column(name = "longitude")
+    private double longitude;
+
+    @Column(name = "latitude")
+    private double latitude;
+
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     private AddressType type;

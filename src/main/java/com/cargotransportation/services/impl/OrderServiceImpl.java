@@ -42,7 +42,8 @@ public class OrderServiceImpl implements OrderService {
                 CreateAddressRequest.builder()
                         .address(request.getSourceAddress())
                         .state(request.getSourceState())
-                        .coordinates(request.getSourceCoordinates())
+                        .latitude(request.getSourceLatitude())
+                        .longitude(request.getSourceLongitude())
                         .city(request.getSourceCity())
                         .build()));
         log.info("Source address created: " + sourceAddress);
@@ -52,8 +53,10 @@ public class OrderServiceImpl implements OrderService {
                         .address(request.getDestinationAddress())
                         .state(request.getDestinationState())
                         .city(request.getDestinationCity())
-                        .coordinates(request.getDestinationCoordinates())
+                        .latitude(request.getDestinationLatitude())
+                        .longitude(request.getDestinationLongitude())
                         .build()));
+        log.info("Destination address created: " + destinationAddress);
 
         ProductType productType = Converter.convert(productTypeService.findByName(request.getProductType()));
         log.info("Product type found: " + productType);

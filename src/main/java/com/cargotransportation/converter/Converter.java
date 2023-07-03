@@ -69,7 +69,8 @@ public class Converter {
                 .id(dto.getId())
                 .address(dto.getAddress())
                 .state(dto.getState())
-                .coordinates(dto.getCoordinates())
+                .longitude(dto.getLongitude())
+                .latitude(dto.getLatitude())
                 .type(dto.getType())
                 .city(dto.getCity())
                 .build();
@@ -81,7 +82,8 @@ public class Converter {
                 .id(entity.getId())
                 .address(entity.getAddress())
                 .state(entity.getState())
-                .coordinates(entity.getCoordinates())
+                .longitude(entity.getLongitude())
+                .latitude(entity.getLatitude())
                 .type(entity.getType())
                 .city(entity.getCity())
                 .build();

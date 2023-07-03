@@ -19,12 +19,14 @@ public class CreateOrderRequest {
     private String sourceCity;
     private String sourceState;
     private String sourceAddress;
-    private String sourceCoordinates;
+    private Double sourceLatitude;
+    private Double sourceLongitude;
 
     private String destinationCity;
     private String destinationState;
     private String destinationAddress;
-    private String destinationCoordinates;
+    private Double destinationLongitude;
+    private Double destinationLatitude;
 
     private Integer volume;
     private String productType;
