@@ -1,12 +1,9 @@
 package com.cargotransportation.conf;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -35,7 +32,7 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable).authorizeHttpRequests((authorize) -> {
+                .cors(Customizer.withDefaults()).authorizeHttpRequests((authorize) -> {
             authorize.anyRequest().authenticated();
         }).httpBasic(Customizer.withDefaults());
         return http.build();
