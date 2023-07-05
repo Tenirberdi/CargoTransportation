@@ -160,30 +160,27 @@ public class OrderServiceImpl implements OrderService {
         if(order.getCarrier() != null) throw new IsExistsException(
                 "Order with id '" + orderId + "' has already been taken",
                 HttpStatus.BAD_REQUEST
-                );
+        );
 
         User carrier = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",carrierId));
         order.setCarrier(carrier);
 
         double totalPrice = 0.0;
-        Optional<Transport> transportOptional = transportRepository.findById(carrierId);
-        if (!transportOptional.isPresent()) {
+        Transport transport = transportRepository.findByCarrier(carrier);
+        if (transport == null) {
             throw new NotFoundException("Carrier with id' " + carrierId + "' has not transport!");
         }
-        Transport transport = transportOptional.get();
-//        Transport transport = transportRepository.getTransportByCarrierId(carrierId).get(0);
 
         CarrierCompany carrierCompany = transport.getCarrierCompany();
 
         double totalKmPrice = carrierCompany.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
         double totalVolumePrice = (carrierCompany.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
         totalPrice = totalKmPrice + totalVolumePrice;
-        double totalOrderTypePrice = order.getOrderType()==OrderType.EXPRESS?
+
+        totalPrice = order.getOrderType()==OrderType.EXPRESS?
                 totalPrice+(carrierCompany.getPercentToExpress()*totalPrice)
                 :
                 totalPrice+(carrierCompany.getPercentToStandard()*totalPrice);
-
-        totalPrice = totalOrderTypePrice;
 
         order.setTotalPrice(totalPrice);
 
