@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
         if(order.getCarrier() != null) throw new IsExistsException(
                 "Order with id '" + orderId + "' has already been taken",
                 HttpStatus.BAD_REQUEST
-                );
+        );
 
         User carrier = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",carrierId));
         order.setCarrier(carrier);
@@ -170,7 +170,6 @@ public class OrderServiceImpl implements OrderService {
         if (transport == null) {
             throw new NotFoundException("Carrier with id' " + carrierId + "' has not transport!");
         }
-//        Transport transport = transportRepository.getTransportByCarrierId(carrierId).get(0);
 
         CarrierCompany carrierCompany = transport.getCarrierCompany();
 
