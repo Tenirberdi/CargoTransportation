@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuperBuilder
@@ -19,7 +20,7 @@ public class CarrierCompany extends User{
     private String companyName;
 
     @Column(name = "company_address")
-    private Address companyAddress;
+    private String companyAddress;
 
     @Column(name = "price_per_lb")
     private int pricePerLb;
@@ -27,7 +28,13 @@ public class CarrierCompany extends User{
     @Column(name = "price_per_km")
     private int pricePerKm;
 
-    @OneToMany
-    private List<Transport> companyTransports;
+    @Column(name = "percent_to_express")
+    private int percentToExpress;
+
+    @Column(name = "percent_to_standard")
+    private int percentToStandard;
+
+    @OneToMany(mappedBy = "carrierCompany",cascade = CascadeType.MERGE)
+    private List<Transport> companyTransports = new ArrayList<>();
 
 }

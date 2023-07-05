@@ -81,4 +81,13 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
 
+    @Column(name = "distance")
+    private Double totalKm;
+
+    @Column(name = "duration")
+    private String duration;
+
+    @Column(name = "total_price")
+    private Double totalPrice = 0.0;
+
 }

@@ -2,9 +2,17 @@ package com.cargotransportation.converter;
 
 import com.cargotransportation.dao.*;
 import com.cargotransportation.dto.*;
+import com.cargotransportation.repositories.CarrierCompanyRepository;
+import com.cargotransportation.services.CarrierCompanyService;
+import com.cargotransportation.services.TransportService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Converter {
@@ -25,7 +33,9 @@ public class Converter {
                 .build();
     }
 
+
     public static Transport convert(TransportDto dto){
+
         if(dto == null)  return null;
         return Transport.builder()
                 .id(dto.getId())
@@ -46,6 +56,7 @@ public class Converter {
                 .capacityInTons(entity.getCapacityInTons())
                 .type(entity.getType())
                 .carrier(Converter.convert(entity.getCarrier()))
+                .carrierCompanyId(entity.getCarrierCompany()==null?null:entity.getCarrierCompany().getId())
                 .build();
     }
 
@@ -147,6 +158,9 @@ public class Converter {
                 .productType(Converter.convert(dto.getProductType()))
                 .createdDate(dto.getCreatedDate())
                 .takenDate(dto.getTakenDate())
+                .duration(dto.getDuration())
+                .totalKm(dto.getTotalKm())
+                .totalPrice(dto.getTotalPrice()==null?0.0:dto.getTotalPrice())
                 .deliveredDate(dto.getDeliveredDate())
                 .estimatedDeliveryDate(dto.getEstimatedDeliveryDate())
                 .status(dto.getStatus())
@@ -172,6 +186,9 @@ public class Converter {
                 .deliveredDate(entity.getDeliveredDate())
                 .estimatedDeliveryDate(entity.getEstimatedDeliveryDate())
                 .status(entity.getStatus())
+                .totalKm(entity.getTotalKm())
+                .totalPrice(entity.getTotalPrice()==null?0.0:entity.getTotalPrice())
+                .duration(entity.getDuration())
                 .currentLocation(Converter.convert(entity.getCurrentLocation()))
                 .build();
     }
@@ -185,15 +202,28 @@ public class Converter {
                 .createdAt(dto.getCreatedAt())
                 .isConfirmed(dto.isConfirmed())
                 .fio(dto.getFio())
+                .phone(dto.getPhone())
                 .age(dto.getAge())
                 .address(dto.getAddress())
-                .companyAddress(Converter.convert(dto.getCompanyAddressDto()))
+                .companyAddress(dto.getCompanyAddressDto())
                 .companyName(dto.getCompanyName())
+                .percentToExpress(dto.getPercentToExpress())
+                .percentToStandard(dto.getPercentToStandard())
                 .pricePerKm(dto.getPricePerKm())
+                .companyTransports(dtosToEntities(dto.getCompanyTransports()))
                 .pricePerLb(dto.getPricePerLb())
                 .build();
     }
 
+    private static List<TransportDto> entitiesToDtos(List<Transport> entities){
+        if(entities == null) return null;
+        return entities.stream().map(Converter::convert).collect(Collectors.toList());
+    }
+
+    private static List<Transport> dtosToEntities(List<TransportDto> dtos){
+        if(dtos == null) return null;
+        return dtos.stream().map(Converter::convert).collect(Collectors.toList());
+    }
 
     public static CarrierCompanyDto convert(CarrierCompany entity){
         if(entity == null) return null;
@@ -207,9 +237,13 @@ public class Converter {
                 .age(entity.getAge())
                 .address(entity.getAddress())
                 .phone(entity.getPhone())
+                .percentToExpress(entity.getPercentToExpress())
+                .percentToStandard(entity.getPercentToStandard())
                 .pricePerKm(entity.getPricePerKm())
                 .pricePerLb(entity.getPricePerLb())
-                .companyAddressDto(Converter.convert(entity.getCompanyAddress()))
+                .companyTransports(entitiesToDtos(entity.getCompanyTransports()))
+                .companyName(entity.getCompanyName())
+                .companyAddressDto(entity.getCompanyAddress())
                 .build();
     }
 

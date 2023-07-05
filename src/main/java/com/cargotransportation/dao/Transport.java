@@ -2,13 +2,11 @@ package com.cargotransportation.dao;
 
 import com.cargotransportation.constants.TransportType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Data
+@EqualsAndHashCode(exclude = "carrier")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -37,7 +35,7 @@ public class Transport {
     private User carrier;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "company_id")
     private CarrierCompany carrierCompany;
 

@@ -9,6 +9,7 @@ import java.util.List;
 
 @SuperBuilder
 @Data
+@EqualsAndHashCode(exclude = "role")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -50,4 +51,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Document> documents;
+
+    @OneToOne(mappedBy = "carrier")
+    private Transport transport;
+
 }

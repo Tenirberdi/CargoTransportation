@@ -25,6 +25,6 @@ public class CreateCarrierCompanyRequest {
     private Integer age;
 
     private String companyName;
-    private AddressDto companyAddressDto;
+    private String companyAddressDto;
 
 }

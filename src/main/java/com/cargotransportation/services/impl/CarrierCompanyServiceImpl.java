@@ -2,42 +2,32 @@ package com.cargotransportation.services.impl;
 
 import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.CarrierCompany;
-import com.cargotransportation.dao.Role;
+import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dto.CarrierCompanyDto;
-import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
+import com.cargotransportation.dto.TransportDto;
+import com.cargotransportation.dto.requests.CreateTransportRequest;
+import com.cargotransportation.dto.requests.UpdateCarrierCompanyRequest;
+import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.CarrierCompanyRepository;
 import com.cargotransportation.services.CarrierCompanyService;
-import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.cargotransportation.services.TransportService;
+import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class CarrierCompanyServiceImpl implements CarrierCompanyService {
 
     private final CarrierCompanyRepository carrierCompanyRepository;
+    private final TransportService transportService;
 
-
-    @Override
-    public CarrierCompanyDto save(CreateCarrierCompanyRequest request) {
-        CarrierCompany carrierCompany = CarrierCompany.builder()
-                .username(request.getUsername())
-                .password(new BCryptPasswordEncoder().encode(request.getPassword()))
-                .role(Role.builder().name(request.getRole()).build())
-                .createdAt(LocalDateTime.now())
-                .fio(request.getFio())
-                .age(request.getAge())
-                .address(request.getAddress())
-                .phone(request.getPhone())
-
-                .companyName(request.getCompanyName())
-                .companyAddress(Converter.convert(request.getCompanyAddressDto()))
-                .build();
-        return Converter.convert(carrierCompanyRepository.save(carrierCompany));
+    public CarrierCompanyServiceImpl(CarrierCompanyRepository carrierCompanyRepository, @Lazy TransportService transportService) {
+        this.carrierCompanyRepository = carrierCompanyRepository;
+        this.transportService = transportService;
     }
 
     @Override
@@ -46,5 +36,82 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
                 .stream()
                 .map(Converter::convert)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CarrierCompanyDto findById(Long id) {
+        CarrierCompany carrierCompany = carrierCompanyRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Carrier company with id '" + id + "' not found!"));
+        List<Transport> transports = transportService.findAllByCarrierCompanyId(id)
+                .stream()
+                .map(dto ->
+                        Transport.builder()
+                                .id(dto.getId())
+                                .model(dto.getModel())
+                                .number(dto.getNumber())
+                                .capacityInTons(dto.getCapacityInTons())
+                                .type(dto.getType())
+                                .carrier(Converter.convert(dto.getCarrier()))
+                                .carrierCompany(carrierCompany)
+                                .build()
+                )
+                .collect(Collectors.toList());
+        carrierCompany.setCompanyTransports(transports);
+        return Converter.convert(carrierCompany);
+    }
+
+    private Transport convert(TransportDto dto){
+
+        if(dto == null)  return null;
+        return Transport.builder()
+                .id(dto.getId())
+                .model(dto.getModel())
+                .number(dto.getNumber())
+                .capacityInTons(dto.getCapacityInTons())
+                .type(dto.getType())
+                .carrier(Converter.convert(dto.getCarrier()))
+                .carrierCompany(carrierCompanyRepository.findById(dto.getCarrierCompanyId()).get())
+                .build();
+    }
+
+    @Override
+    public CarrierCompanyDto createTransports(Long carrierCompanyId,List<CreateTransportRequest> requests) {
+        CarrierCompany carrierCompany = Converter.convert(findById(carrierCompanyId));
+        List<Transport> transports = new ArrayList<>();
+        for(CreateTransportRequest request:requests){
+            transports.add(convert(transportService.saveById(carrierCompanyId,request)));
+        }
+        carrierCompany.setCompanyTransports(transports);
+        CarrierCompanyDto carrierCompanyDto = CarrierCompanyDto.builder()
+                .id(carrierCompany.getId())
+                .username(carrierCompany.getUsername())
+                .role(carrierCompany.getRole().getName())
+                .createdAt(carrierCompany.getCreatedAt())
+                .isConfirmed(carrierCompany.isConfirmed())
+                .fio(carrierCompany.getFio())
+                .age(carrierCompany.getAge())
+                .address(carrierCompany.getAddress())
+                .phone(carrierCompany.getPhone())
+                .percentToExpress(carrierCompany.getPercentToExpress())
+                .percentToStandard(carrierCompany.getPercentToStandard())
+                .pricePerKm(carrierCompany.getPricePerKm())
+                .pricePerLb(carrierCompany.getPricePerLb())
+                .companyTransports(transports.stream().map(Converter::convert).collect(Collectors.toList()))
+                .companyName(carrierCompany.getCompanyName())
+                .companyAddressDto(carrierCompany.getCompanyAddress())
+                .build();
+        return carrierCompanyDto;
+    }
+
+    @Override
+    @Transactional
+    public CarrierCompanyDto updatePricesByCompanyId(Long id, UpdateCarrierCompanyRequest request) {
+        CarrierCompany carrierCompany = carrierCompanyRepository.findById(id).orElseThrow(() -> new NotFoundException("Carrier company with id '" + id + "' not found!"));
+        carrierCompany.setPricePerKm(request.getPricePerKm());
+        carrierCompany.setPricePerLb(request.getPricePerLb());
+        carrierCompany.setPercentToExpress(request.getPercentToExpress());
+        carrierCompany.setPercentToStandard(request.getPercentToStandard());
+//        carrierCompanyRepository.saveAndFlush(carrierCompany);
+        return Converter.convert(carrierCompany);
     }
 }

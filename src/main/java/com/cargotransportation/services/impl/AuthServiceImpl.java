@@ -1,6 +1,12 @@
 package com.cargotransportation.services.impl;
 
+import com.cargotransportation.converter.Converter;
+import com.cargotransportation.dao.CarrierCompany;
+import com.cargotransportation.dao.Role;
 import com.cargotransportation.dao.User;
+import com.cargotransportation.dto.CarrierCompanyDto;
+import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
+import com.cargotransportation.repositories.CarrierCompanyRepository;
 import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.AuthService;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Service
@@ -47,5 +54,6 @@ public class AuthServiceImpl implements AuthService {
         }
         throw new BadCredentialsException("Bad credentials");
     }
+
 
 }

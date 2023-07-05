@@ -36,6 +36,8 @@ public class CreateOrderRequest {
     private Long price;
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
+    private Double totalKm;
+    private String duration;
 
     private LocalDateTime estimatedDeliveryDate;
 }

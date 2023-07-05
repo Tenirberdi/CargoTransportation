@@ -36,4 +36,7 @@ public class OrderDto {
     private AddressDto currentLocation;
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
+    private Double totalKm;
+    private Double totalPrice;
+    private String duration;
 }

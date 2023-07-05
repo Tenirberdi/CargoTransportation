@@ -1,14 +1,14 @@
 package com.cargotransportation.controllers;
 
+import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
 import com.cargotransportation.dto.requests.CreateCarrierRequest;
 import com.cargotransportation.dto.requests.CreateUserRequest;
 import com.cargotransportation.dto.requests.SignInRequest;
 import com.cargotransportation.dto.response.SignInResponse;
 import com.cargotransportation.dto.response.SignUpResponse;
-import com.cargotransportation.services.AuthService;
-import com.cargotransportation.services.FilesStorageService;
-import com.cargotransportation.services.RoleService;
-import com.cargotransportation.services.UserService;
+import com.cargotransportation.services.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,5 +50,10 @@ public class AuthController {
     @PostMapping("/sign-up/shipper")
     private SignUpResponse registerCarrier(@RequestBody CreateUserRequest request) {
         return SignUpResponse.builder().id(userService.save(request)).build();
+    }
+
+    @PostMapping("/sign-up/company-owner")
+    public ResponseEntity<?> save(@RequestBody CreateCarrierCompanyRequest request){
+        return new ResponseEntity<>(userService.save(request), HttpStatus.OK);
     }
 }

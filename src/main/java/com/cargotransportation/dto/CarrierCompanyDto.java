@@ -3,6 +3,7 @@ package com.cargotransportation.dto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuperBuilder
@@ -11,8 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class CarrierCompanyDto extends UserDto {
     private String companyName;
-    private AddressDto companyAddressDto;
+    private String companyAddressDto;
     private int pricePerLb;
     private int pricePerKm;
-    private List<TransportDto> companyTransports;
+    private int percentToExpress;
+    private int percentToStandard;
+    private List<TransportDto> companyTransports = new ArrayList<>();
 }

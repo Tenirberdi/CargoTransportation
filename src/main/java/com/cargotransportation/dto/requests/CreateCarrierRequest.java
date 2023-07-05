@@ -18,8 +18,4 @@ public class CreateCarrierRequest {
     private String address;
     private String phone;
     private Integer age;
-    private String autoModel;
-    private String autoNumber;
-    private Integer autoCapacityInTons;
-    private TransportType autoType;
 }
