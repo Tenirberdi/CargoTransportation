@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
         User carrier = order.getCarrier();
         if(carrier != null){
-            double totalPrice = 0.0;
+            double totalPrice;
             CarrierCompany carrierCompany = carrier.getTransport().getCarrierCompany();
             if(carrierCompany == null){
                 throw new NotFoundException("Carrier with id '" + carrier.getId() + "' does not have a company!");
@@ -115,11 +115,11 @@ public class OrderServiceImpl implements OrderService {
             int percent = order.getOrderType()==OrderType.EXPRESS?carrierCompany.getPercentToExpress():carrierCompany.getPercentToStandard();
             totalPrice = totalKmPrice + totalVolumePrice;
             double totalOrderTypePrice = order.getOrderType()==OrderType.EXPRESS?
-                    totalPrice+(carrierCompany.getPercentToExpress()*totalPrice/100)
+                    (carrierCompany.getPercentToExpress()*totalPrice/100)
                     :
-                    totalPrice+(carrierCompany.getPercentToStandard()*totalPrice/100);
+                    (carrierCompany.getPercentToStandard()*totalPrice/100);
 
-            totalPrice =  totalOrderTypePrice;
+            totalPrice +=  totalOrderTypePrice;
             int[] minutesAndHours = parseDuration(order.getDuration());
             return OrderPriceInfoResponse.builder()
                     .totalDistancePrice(totalKmPrice)

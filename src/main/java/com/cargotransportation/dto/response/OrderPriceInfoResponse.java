@@ -16,10 +16,11 @@ public class OrderPriceInfoResponse {
     private int minutes;
 
     private double tariffForDistance;
+    private double tariffForVolume;
+    private double percentByOrderType;
+
     private double totalDistancePrice;
     private double totalByOrderType;
     private double totalVolumePrice;
-    private double tariffForVolume;
-    private double percentByOrderType;
     private Double total;
 }
