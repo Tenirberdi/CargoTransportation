@@ -17,15 +17,17 @@ public class BrokerController {
 
     private final OrderService orderService;
 
-    @PutMapping("/order/{orderId}/accept/{brokerId}")
-    public ResponseEntity<?> acceptOrderById(@PathVariable("orderId") Long orderId,@PathVariable("brokerId") Long brokerId){
+    @PutMapping("/order/{orderId}/accept")
+    public ResponseEntity<?> acceptOrderById(
+            @PathVariable("orderId") Long orderId)
+    {
         if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(orderService.acceptByOrderIdAndBrokerId(orderId,brokerId),HttpStatus.OK);
+        return new ResponseEntity<>(orderService.acceptByOrderId(orderId),HttpStatus.OK);
     }
 
-    @PutMapping("/order/{orderId}/reject/{brokerId}")
-    public ResponseEntity<?> setOrderDeliveredDate(@PathVariable("orderId") Long orderId){
+    @PutMapping("/order/{orderId}/reject")
+    public ResponseEntity<?> rejectOrderById(@PathVariable("orderId") Long orderId){
         if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(orderService.rejectById(orderId),HttpStatus.OK);
     }

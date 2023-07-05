@@ -9,8 +9,10 @@ import com.cargotransportation.dto.requests.CreateTransportRequest;
 import com.cargotransportation.dto.requests.UpdateCarrierCompanyRequest;
 import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.CarrierCompanyRepository;
+import com.cargotransportation.services.AuthService;
 import com.cargotransportation.services.CarrierCompanyService;
 import com.cargotransportation.services.TransportService;
+import com.cargotransportation.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,14 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
 
     private final CarrierCompanyRepository carrierCompanyRepository;
     private final TransportService transportService;
+    private final UserService userService;
+    private final AuthService authService;
 
-    public CarrierCompanyServiceImpl(CarrierCompanyRepository carrierCompanyRepository, @Lazy TransportService transportService) {
+    public CarrierCompanyServiceImpl(UserService userService, AuthService authService, CarrierCompanyRepository carrierCompanyRepository, @Lazy TransportService transportService) {
         this.carrierCompanyRepository = carrierCompanyRepository;
         this.transportService = transportService;
+        this.userService = userService;
+        this.authService = authService;
     }
 
     @Override
@@ -37,6 +43,16 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
                 .map(Converter::convert)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public CarrierCompanyDto findByUsername(String username){
+        CarrierCompany carrierCompany = carrierCompanyRepository.findByUsername(username);
+        if(carrierCompany == null){
+            throw new NotFoundException("Carrier company with username '" + username + "' not found!");
+        }
+        return Converter.convert(carrierCompany);
+    }
+
 
     @Override
     public CarrierCompanyDto findById(Long id) {
@@ -75,11 +91,15 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
     }
 
     @Override
-    public CarrierCompanyDto createTransports(Long carrierCompanyId,List<CreateTransportRequest> requests) {
-        CarrierCompany carrierCompany = Converter.convert(findById(carrierCompanyId));
+    public CarrierCompanyDto createTransports(List<CreateTransportRequest> requests) {
+        CarrierCompany carrierCompany = Converter.convert(findById(
+                findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId())
+        );
         List<Transport> transports = new ArrayList<>();
         for(CreateTransportRequest request:requests){
-            transports.add(convert(transportService.saveById(carrierCompanyId,request)));
+            transports.add(convert(transportService.saveById(carrierCompany.getId(),request)));
         }
         carrierCompany.setCompanyTransports(transports);
         CarrierCompanyDto carrierCompanyDto = CarrierCompanyDto.builder()
@@ -105,13 +125,16 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
 
     @Override
     @Transactional
-    public CarrierCompanyDto updatePricesByCompanyId(Long id, UpdateCarrierCompanyRequest request) {
-        CarrierCompany carrierCompany = carrierCompanyRepository.findById(id).orElseThrow(() -> new NotFoundException("Carrier company with id '" + id + "' not found!"));
+    public CarrierCompanyDto updatePrices(UpdateCarrierCompanyRequest request) {
+        CarrierCompany carrierCompany = Converter.convert(findById(
+                findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId()
+        ));
         carrierCompany.setPricePerKm(request.getPricePerKm());
         carrierCompany.setPricePerLb(request.getPricePerLb());
         carrierCompany.setPercentToExpress(request.getPercentToExpress());
         carrierCompany.setPercentToStandard(request.getPercentToStandard());
-//        carrierCompanyRepository.saveAndFlush(carrierCompany);
         return Converter.convert(carrierCompany);
     }
 }

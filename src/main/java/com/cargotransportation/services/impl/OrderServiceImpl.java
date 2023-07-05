@@ -34,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductTypeService productTypeService;
     private final UserService userService;
     private final TransportRepository transportRepository;
+    private final AuthService authService;
 
 
     @Override
@@ -150,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @PreAuthorize("hasAuthority('order.edit')")
-    public OrderDto takeByOrderIdAndCarrierId(Long orderId, Long carrierId) {
+    public OrderDto takeByOrderId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
         ));
@@ -162,13 +163,17 @@ public class OrderServiceImpl implements OrderService {
                 HttpStatus.BAD_REQUEST
         );
 
-        User carrier = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",carrierId));
+        User carrier = Converter.convert(userService.findById(
+                userService.findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId()
+        ));
         order.setCarrier(carrier);
 
         double totalPrice = 0.0;
         Transport transport = transportRepository.findByCarrier(carrier);
         if (transport == null) {
-            throw new NotFoundException("Carrier with id' " + carrierId + "' has not transport!");
+            throw new NotFoundException("Carrier with id' " + carrier.getId() + "' has not transport!");
         }
 
         CarrierCompany carrierCompany = transport.getCarrierCompany();
@@ -192,13 +197,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @PreAuthorize("hasAuthority('order.edit')")
-    public OrderDto acceptByOrderIdAndBrokerId(Long orderId,Long brokerId) {
+    public OrderDto acceptByOrderId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
         ));
-        User user = Converter.convert(userService.findUserByRoleAndId("ROLE_CARRIER",brokerId));
-
         isOrderRejected(order);
+        User user = Converter.convert(userService.findById(
+                userService.findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId())
+        );
 
         if(order.getStatus() != OrderStatus.TAKEN)
         {
