@@ -10,8 +10,9 @@ import java.util.List;
 public interface CarrierCompanyService {
     List<CarrierCompanyDto> getAll();
     CarrierCompanyDto findById(Long id);
-    CarrierCompanyDto createTransports(Long carrierCompanyId,List<CreateTransportRequest> requests);
+    CarrierCompanyDto createTransports(List<CreateTransportRequest> requests);
+    CarrierCompanyDto findByUsername(String username);
 
-    CarrierCompanyDto updatePricesByCompanyId(Long id,UpdateCarrierCompanyRequest request);
+    CarrierCompanyDto updatePrices(UpdateCarrierCompanyRequest request);
 
 }

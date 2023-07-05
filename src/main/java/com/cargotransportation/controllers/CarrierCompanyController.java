@@ -3,9 +3,12 @@ package com.cargotransportation.controllers;
 import com.cargotransportation.dao.CarrierCompany;
 import com.cargotransportation.dto.requests.CreateTransportRequest;
 import com.cargotransportation.dto.requests.UpdateCarrierCompanyRequest;
+import com.cargotransportation.services.AuthService;
 import com.cargotransportation.services.CarrierCompanyService;
 import com.cargotransportation.services.TransportService;
+import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,22 +22,24 @@ public class CarrierCompanyController {
 
     private final TransportService transportService;
     private final CarrierCompanyService carrierCompanyService;
+    private final AuthService authService;
 
 
-    @PostMapping("/transport/{carrierCompanyId}")
+    @PostMapping("/transport")
     public ResponseEntity<?> save(
-            @PathVariable("carrierCompanyId") Long carrierCompanyId,
             @RequestBody List<CreateTransportRequest> request)
     {
-        return new ResponseEntity<>(carrierCompanyService.createTransports(carrierCompanyId,request), HttpStatus.OK);
+        return new ResponseEntity<>(carrierCompanyService.createTransports(request), HttpStatus.OK);
     }
 
-    @PutMapping("/transport/{transportId}/{carrierId}")
-    public ResponseEntity<?> setCarrierToTransport(
-            @PathVariable("transportId") Long transportId,
-            @PathVariable("carrierId") Long carrierId){
-
-        return new ResponseEntity<>(transportService.setCarrierByTransportIdCarrierId(transportId,carrierId),HttpStatus.OK);
+    @GetMapping("/transport")
+    public ResponseEntity<?> getAllTransports(){
+        return new ResponseEntity<>(transportService.findAllByCarrierCompanyId(
+                carrierCompanyService.findById(
+                        carrierCompanyService.findByUsername(
+                                authService.getCurrentUserUsername()
+                        ).getId()).getId()
+        ),HttpStatus.OK);
     }
 
     @PutMapping("/transport/{transportId}/set/{carrierId}")
@@ -43,10 +48,9 @@ public class CarrierCompanyController {
         return new ResponseEntity<>(transportService.setCarrierByTransportIdCarrierId(transportId,carrierId),HttpStatus.OK);
     }
 
-    @PutMapping("/{carrierCompanyId}/update-price-info")
+    @PutMapping("/update-price-info")
     public ResponseEntity<?> updateCompanyPrice(
-            @PathVariable("carrierCompanyId") Long carrierCompanyId,
             @RequestBody UpdateCarrierCompanyRequest request){
-        return new ResponseEntity<>(carrierCompanyService.updatePricesByCompanyId(carrierCompanyId,request),HttpStatus.OK);
+        return new ResponseEntity<>(carrierCompanyService.updatePrices(request),HttpStatus.OK);
     }
 }

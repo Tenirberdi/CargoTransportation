@@ -16,12 +16,12 @@ public class CarrierController {
 
     private final OrderService orderService;
 
-    @PutMapping("/order/{orderId}/take/{carrierId}")
+    @PutMapping("/order/{orderId}/take")
     public ResponseEntity<?> takeOrder(
-            @PathVariable("orderId") Long orderId,
-            @PathVariable("carrierId") Long carrierId){
-        if(orderId == null || orderId < 1 || carrierId == null || carrierId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(orderService.takeByOrderIdAndCarrierId(orderId,carrierId),HttpStatus.OK);
+            @PathVariable("orderId") Long orderId
+    ){
+        if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(orderService.takeByOrderId(orderId),HttpStatus.OK);
     }
 
     @PutMapping("/order/{orderId}/setTakenDate")

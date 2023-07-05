@@ -15,9 +15,9 @@ public interface OrderService {
     OrderDto create(CreateOrderRequest request);
     OrderDto findById(Long id);
 
-    OrderDto takeByOrderIdAndCarrierId(Long orderId, Long carrierId);
+    OrderDto takeByOrderId(Long orderId);
 
-    OrderDto acceptByOrderIdAndBrokerId(Long orderId,Long brokerId);
+    OrderDto acceptByOrderId(Long orderId);
     OrderDto setProductTakenDateById(Long orderId);
 
     OrderDto setDeliveredDateById(Long orderId);
