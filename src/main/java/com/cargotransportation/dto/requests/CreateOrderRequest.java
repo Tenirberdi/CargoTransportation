@@ -1,6 +1,9 @@
 package com.cargotransportation.dto.requests;
 
 import com.cargotransportation.constants.DocumentType;
+import com.cargotransportation.dao.OrderType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +34,10 @@ public class CreateOrderRequest {
     private Integer volume;
     private String productType;
     private Long price;
+    @Enumerated(value = EnumType.STRING)
+    private OrderType orderType;
+    private Double totalKm;
+    private String duration;
 
     private LocalDateTime estimatedDeliveryDate;
 }

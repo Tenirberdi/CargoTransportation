@@ -10,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
-    @Query(value = "select * from transports where carrier_id = ?1", nativeQuery = true)
-    List<Transport> getTransportByCarrierId(Long id);
+    Transport findById(long id);
+
+    List<Transport> findAllByCarrierCompany_Id(Long carrierCompanyId);
+
+
+
 }

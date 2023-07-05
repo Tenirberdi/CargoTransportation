@@ -58,5 +58,11 @@ public class OrderController {
         return new ResponseEntity<>(filteredOrders, HttpStatus.OK);
     }
 
+    @GetMapping("/{orderId}/price-info")
+    public ResponseEntity<?> getPriceInfoById(@PathVariable("orderId") Long orderId){
+        return new ResponseEntity<>(orderService.getPriceInfoByOrderId(orderId),HttpStatus.OK);
+    }
+
+
 
 }

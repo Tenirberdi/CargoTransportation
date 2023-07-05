@@ -6,15 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Table(name = "order_types")
-public class OrderType {
-    @Id
-    @Column(name = "name")
-    private String name;
 
+public enum OrderType {
+    STANDARD,
+    EXPRESS
 }

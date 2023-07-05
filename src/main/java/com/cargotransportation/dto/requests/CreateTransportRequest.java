@@ -1,4 +1,4 @@
-package com.cargotransportation.dto;
+package com.cargotransportation.dto.requests;
 
 import com.cargotransportation.constants.TransportType;
 import jakarta.persistence.EnumType;
@@ -12,13 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransportDto {
-    private Long id;
+public class CreateTransportRequest {
+
     private String model;
     private String number;
     private Integer capacityInTons;
     @Enumerated(value = EnumType.STRING)
     private TransportType type;
-    private UserDto carrier;
-    private Long carrierCompanyId;
+
 }

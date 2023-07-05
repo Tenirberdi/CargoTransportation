@@ -77,4 +77,17 @@ public class Order {
     @JoinColumn(name = "current_location_id", referencedColumnName = "id")
     private Address currentLocation;
 
+    @Column(name = "type")
+    @Enumerated(value = EnumType.STRING)
+    private OrderType orderType;
+
+    @Column(name = "distance")
+    private Double totalKm;
+
+    @Column(name = "duration")
+    private String duration;
+
+    @Column(name = "total_price")
+    private Double totalPrice = 0.0;
+
 }

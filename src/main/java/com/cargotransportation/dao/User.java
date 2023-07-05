@@ -7,12 +7,14 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @Data
+@EqualsAndHashCode(exclude = "role")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +51,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Document> documents;
+
+    @OneToOne(mappedBy = "carrier")
+    private Transport transport;
+
 }

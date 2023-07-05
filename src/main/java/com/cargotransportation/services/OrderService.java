@@ -5,6 +5,7 @@ import com.cargotransportation.constants.OrderStatus;
 import com.cargotransportation.dao.ProductType;
 import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
+import com.cargotransportation.dto.response.OrderPriceInfoResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,5 +34,7 @@ public interface OrderService {
             String productTypeName,
             LocalDateTime minDate, LocalDateTime maxDate
     );
+
+    OrderPriceInfoResponse getPriceInfoByOrderId(Long orderId);
 
 }
