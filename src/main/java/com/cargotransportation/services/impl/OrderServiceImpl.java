@@ -165,6 +165,20 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<OrderDto> findAllByCarrierAndStatus(OrderStatus status) {
+        User carrier = Converter.convert(userService.findById(
+                userService.findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId())
+        );
+
+        return orderRepository.findAllByCarrierAndStatus(carrier,status)
+                .stream()
+                .map(Converter::convert)
+                .collect(Collectors.toList());
+    }
+
     private int[] parseDuration(String duration){
         String[] durationParts = duration.split(":");
         int hours = Integer.parseInt(durationParts[0]);
@@ -194,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
         ));
         order.setCarrier(carrier);
 
-        double totalPrice = 0.0;
+        double totalPrice;
         Transport transport = transportRepository.findByCarrier(carrier);
         if (transport == null) {
             throw new NotFoundException("Carrier with id' " + carrier.getId() + "' has not transport!");
@@ -220,6 +234,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderDto confirmByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
+                "Order with id '" + orderId + "' not found!"
+        ));
+        isOrderRejected(order);
+
+        if(order.getStatus() != OrderStatus.TAKEN)
+        {
+            throw new IllegalStatusException(
+                    "Order with id '" + orderId + " is not took!",
+                    HttpStatus.CONFLICT);
+        }
+        order.setStatus(OrderStatus.CONFIRMED);
+        return Converter.convert(orderRepository.save(order));
+    }
+
+    @Override
 //    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto acceptByOrderId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
@@ -232,10 +263,10 @@ public class OrderServiceImpl implements OrderService {
                 ).getId())
         );
 
-        if(order.getStatus() != OrderStatus.TAKEN)
+        if(order.getStatus() != OrderStatus.CONFIRMED)
         {
             throw new IllegalStatusException(
-                    "Order with id '" + orderId + " is not took!",
+                    "Order with id '" + orderId + " is not confirmed by shipper!",
                     HttpStatus.CONFLICT);
         }
         order.setStatus(OrderStatus.ACCEPTED);

@@ -17,6 +17,9 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByStatus(OrderStatus status);
 
+    List<Order> findAllByCarrierAndStatus(User carrier, OrderStatus status);
+
+
     @Query(value = "SELECT * FROM orders WHERE shipper_id = :shipperId", nativeQuery = true)
     List<Order> findAllByShipperId(@Param("shipperId") Long shipperId);
 
