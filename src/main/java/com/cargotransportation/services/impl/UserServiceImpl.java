@@ -108,6 +108,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> findAllByRoleAndTransportIsNull(String role) {
+        return userRepository.findByRoleAndTransportIsNull(roleRepository.findByName(role))
+                .stream()
+                .map(Converter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CarrierCompanyDto save(CreateCarrierCompanyRequest request) {
         Role role = roleRepository.findByName(request.getRole());
         CarrierCompany carrierCompany = CarrierCompany.builder()

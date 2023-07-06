@@ -8,7 +8,7 @@ import com.cargotransportation.dto.TransportDto;
 import com.cargotransportation.dto.requests.CreateTransportRequest;
 import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.TransportRepository;
-import com.cargotransportation.repositories.UserRepository;
+import com.cargotransportation.services.AuthService;
 import com.cargotransportation.services.CarrierCompanyService;
 import com.cargotransportation.services.TransportService;
 import com.cargotransportation.services.UserService;
@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class TransportServiceImpl implements TransportService {
     private final TransportRepository transportRepository;
     private final CarrierCompanyService carrierCompanyService;
     private final UserService userService;
-    private final UserRepository userRepository;
+    private final AuthService authService;
     @Override
     public TransportDto saveById(Long carrierCompanyId, CreateTransportRequest request) {
         CarrierCompany carrierCompany = Converter.convert(carrierCompanyService.findById(carrierCompanyId));
@@ -75,6 +76,23 @@ public class TransportServiceImpl implements TransportService {
                 .map(Converter::convert)
                 .toList();
     }
+
+    @Override
+    public List<TransportDto> findByCarrierIsNullAndCarrierCompany() {
+
+        CarrierCompany carrierCompany = Converter.convert(carrierCompanyService.findById(
+                carrierCompanyService.findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId()
+        ));
+
+        return transportRepository.findByCarrierIsNullAndCarrierCompany(carrierCompany)
+                .stream()
+                .map(Converter::convert)
+                .collect(Collectors.toList());
+    }
+
+
 
 
 }
