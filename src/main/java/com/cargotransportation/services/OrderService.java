@@ -38,6 +38,6 @@ public interface OrderService {
 
     List<OrderDto> getAllWaitingOrders();
 
-    List<OrderDto> findAllByCarrier();
+    List<OrderDto> findAllByShipper();
 
 }

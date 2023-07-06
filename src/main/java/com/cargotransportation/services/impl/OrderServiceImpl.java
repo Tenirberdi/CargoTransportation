@@ -150,16 +150,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAllByCarrier() {
-        User carrier = Converter.convert(userService.findById(
+    public List<OrderDto> findAllByShipper() {
+        User shipper = Converter.convert(userService.findById(
                 userService.findByUsername(
                         authService.getCurrentUserUsername()
                 ).getId())
         );
-        if(!carrier.getRole().getName().equals("ROLE_SHIPPER")){
-            throw new AuthException("User is not carrier!", HttpStatus.OK);
+        if(!shipper.getRole().getName().equals("ROLE_SHIPPER")){
+            throw new AuthException("User is not shipper!", HttpStatus.OK);
         }
-        return orderRepository.findByCarrier(carrier)
+        return orderRepository.findAllByShipperId(shipper.getId())
                 .stream()
                 .map(Converter::convert)
                 .collect(Collectors.toList());

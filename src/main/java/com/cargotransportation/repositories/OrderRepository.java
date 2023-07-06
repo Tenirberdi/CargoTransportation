@@ -17,7 +17,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByStatus(OrderStatus status);
 
-    List<Order> findByCarrier(User carrier);
+    @Query(value = "SELECT * FROM orders WHERE shipper_id = :shipperId", nativeQuery = true)
+    List<Order> findAllByShipperId(@Param("shipperId") Long shipperId);
 
     @Query("SELECT o FROM Order o " +
             "WHERE (:sourceCity IS NULL OR o.sourceAddress.city = :sourceCity) " +

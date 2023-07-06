@@ -16,8 +16,8 @@ public class ShipperController {
     private final OrderService orderService;
 
     @GetMapping("/order")
-    public ResponseEntity<?> findAllByCarrier(){
-        return new ResponseEntity<>(orderService.findAllByCarrier(), HttpStatus.OK);
+    public ResponseEntity<?> findAllByShipper(){
+        return new ResponseEntity<>(orderService.findAllByShipper(), HttpStatus.OK);
     }
 
 }
