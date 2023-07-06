@@ -44,7 +44,7 @@ public class CarrierCompanyController {
         ),HttpStatus.OK);
     }
 
-    @PutMapping("/transport/{transportId}/set/{carrierId}")
+    @GetMapping("/transport/{transportId}/set/{carrierId}")
     public ResponseEntity<?> setTransportToCarrier(@PathVariable("transportId") Long transportId,
                                                    @PathVariable("carrierId") Long carrierId){
         return new ResponseEntity<>(transportService.setCarrierByTransportIdCarrierId(transportId,carrierId),HttpStatus.OK);
