@@ -156,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
                         authService.getCurrentUserUsername()
                 ).getId())
         );
-        if(!carrier.getRole().getName().equals("ROLE_CARRIER")){
+        if(!carrier.getRole().getName().equals("ROLE_SHIPPER")){
             throw new AuthException("User is not carrier!", HttpStatus.OK);
         }
         return orderRepository.findByCarrier(carrier)
