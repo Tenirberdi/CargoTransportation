@@ -9,6 +9,7 @@ import com.cargotransportation.dto.requests.CreateTransportRequest;
 import com.cargotransportation.dto.requests.UpdateCarrierCompanyRequest;
 import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.CarrierCompanyRepository;
+import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.AuthService;
 import com.cargotransportation.services.CarrierCompanyService;
 import com.cargotransportation.services.TransportService;
@@ -28,12 +29,14 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
     private final TransportService transportService;
     private final UserService userService;
     private final AuthService authService;
+    private final UserRepository userRepository;
 
-    public CarrierCompanyServiceImpl(UserService userService, AuthService authService, CarrierCompanyRepository carrierCompanyRepository, @Lazy TransportService transportService) {
+    public CarrierCompanyServiceImpl(UserRepository userRepository, UserService userService, AuthService authService, CarrierCompanyRepository carrierCompanyRepository, @Lazy TransportService transportService) {
         this.carrierCompanyRepository = carrierCompanyRepository;
         this.transportService = transportService;
         this.userService = userService;
         this.authService = authService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -131,11 +134,12 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
                         authService.getCurrentUserUsername()
                 ).getId()
         ));
+        String password = userRepository.findById(carrierCompany.getId()).get().getPassword();
         carrierCompany.setPricePerKm(request.getPricePerKm());
         carrierCompany.setPricePerLb(request.getPricePerLb());
         carrierCompany.setPercentToExpress(request.getPercentToExpress());
         carrierCompany.setPercentToStandard(request.getPercentToStandard());
-        carrierCompany.setPassword(authService.getCurrentUser().getPassword());
+        carrierCompany.setPassword(password);
 
         return Converter.convert(carrierCompanyRepository.save(carrierCompany));
     }
