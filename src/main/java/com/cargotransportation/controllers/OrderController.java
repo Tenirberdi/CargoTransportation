@@ -6,8 +6,10 @@ import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
 import com.cargotransportation.services.OrderService;
+import com.cargotransportation.services.ProductTypeService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final ProductTypeService productTypeService;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateOrderRequest request){
@@ -59,7 +62,5 @@ public class OrderController {
     public ResponseEntity<?> getPriceInfoById(@PathVariable("orderId") Long orderId){
         return new ResponseEntity<>(orderService.getPriceInfoByOrderId(orderId),HttpStatus.OK);
     }
-
-
 
 }
