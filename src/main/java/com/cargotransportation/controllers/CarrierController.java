@@ -1,13 +1,11 @@
 package com.cargotransportation.controllers;
 
+import com.cargotransportation.constants.OrderStatus;
 import com.cargotransportation.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/carriers")
@@ -35,4 +33,10 @@ public class CarrierController {
         if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(orderService.setDeliveredDateById(orderId), HttpStatus.OK);
     }
+
+    @GetMapping("/order/{status}")
+    public ResponseEntity<?> getAllByStatus(@PathVariable("status")String status){
+        return new ResponseEntity<>(orderService.findAllByCarrierAndStatus(OrderStatus.valueOf(status)),HttpStatus.OK);
+    }
+
 }
