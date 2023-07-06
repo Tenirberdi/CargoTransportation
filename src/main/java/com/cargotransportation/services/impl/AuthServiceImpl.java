@@ -44,6 +44,11 @@ public class AuthServiceImpl implements AuthService {
         return user.getUsername();
     }
 
+    public UserDetails getCurrentUser(){
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user;
+    }
+
     @Override
     public String authorize(String username, String password) {
         User user = userRepository.findByUsername(username);

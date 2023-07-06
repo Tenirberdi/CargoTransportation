@@ -14,7 +14,7 @@ public class CarrierController {
 
     private final OrderService orderService;
 
-    @PutMapping("/order/{orderId}/take")
+    @GetMapping("/order/{orderId}/take")
     public ResponseEntity<?> takeOrder(
             @PathVariable("orderId") Long orderId
     ){

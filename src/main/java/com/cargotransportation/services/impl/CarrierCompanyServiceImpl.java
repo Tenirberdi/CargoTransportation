@@ -135,6 +135,8 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
         carrierCompany.setPricePerLb(request.getPricePerLb());
         carrierCompany.setPercentToExpress(request.getPercentToExpress());
         carrierCompany.setPercentToStandard(request.getPercentToStandard());
+        carrierCompany.setPassword(authService.getCurrentUser().getPassword());
+
         return Converter.convert(carrierCompanyRepository.save(carrierCompany));
     }
 }
