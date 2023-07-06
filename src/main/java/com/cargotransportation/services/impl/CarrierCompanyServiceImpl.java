@@ -61,7 +61,7 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
     public CarrierCompanyDto findById(Long id) {
         CarrierCompany carrierCompany = carrierCompanyRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Carrier company with id '" + id + "' not found!"));
-        List<Transport> transports = transportService.findAllByCarrierCompanyId(id)
+        List<Transport> transports = transportService.findAllByCarrierCompanyId(carrierCompany.getId())
                 .stream()
                 .map(dto ->
                         Transport.builder()
@@ -134,6 +134,21 @@ public class CarrierCompanyServiceImpl implements CarrierCompanyService {
                         authService.getCurrentUserUsername()
                 ).getId()
         ));
+        List<Transport> transports = transportService.findAllByCarrierCompanyId(carrierCompany.getId())
+                .stream()
+                .map(dto ->
+                        Transport.builder()
+                                .id(dto.getId())
+                                .model(dto.getModel())
+                                .number(dto.getNumber())
+                                .capacityInTons(dto.getCapacityInTons())
+                                .type(dto.getType())
+                                .carrier(Converter.convert(dto.getCarrier()))
+                                .carrierCompany(carrierCompany)
+                                .build()
+                )
+                .collect(Collectors.toList());
+        carrierCompany.setCompanyTransports(transports);
         String password = userRepository.findById(carrierCompany.getId()).get().getPassword();
         carrierCompany.setPricePerKm(request.getPricePerKm());
         carrierCompany.setPricePerLb(request.getPricePerLb());
