@@ -74,7 +74,6 @@ public class OrderServiceImpl implements OrderService {
                 .destinationAddress(destinationAddress)
                 .volume(request.getVolume())
                 .productType(productType)
-                .price(request.getPrice())
                 .estimatedDeliveryDate(request.getEstimatedDeliveryDate())
                 .totalKm(request.getTotalKm())
                 .duration(request.getDuration())
