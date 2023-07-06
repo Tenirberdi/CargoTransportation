@@ -23,4 +23,8 @@ public class ShipperController {
         return new ResponseEntity<>(orderService.confirmByOrderId(orderId),HttpStatus.OK);
     }
 
+    @PutMapping("/order/{orderId}/decline")
+    public ResponseEntity<?> declineByOrderId(@PathVariable("orderId") Long orderId){
+        return new ResponseEntity<>(orderService.declineByOrderId(orderId),HttpStatus.OK);
+    }
 }
