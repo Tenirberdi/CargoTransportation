@@ -7,6 +7,7 @@ import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateAddressRequest;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
 import com.cargotransportation.dto.response.OrderPriceInfoResponse;
+import com.cargotransportation.exception.AuthException;
 import com.cargotransportation.exception.IllegalStatusException;
 import com.cargotransportation.exception.IsExistsException;
 import com.cargotransportation.exception.NotFoundException;
@@ -143,6 +144,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getAllWaitingOrders() {
         return orderRepository.findByStatus(OrderStatus.WAITING)
+                .stream()
+                .map(Converter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDto> findAllByCarrier() {
+        User carrier = Converter.convert(userService.findById(
+                userService.findByUsername(
+                        authService.getCurrentUserUsername()
+                ).getId())
+        );
+        if(!carrier.getRole().getName().equals("ROLE_CARRIER")){
+            throw new AuthException("User is not carrier!", HttpStatus.OK);
+        }
+        return orderRepository.findByCarrier(carrier)
                 .stream()
                 .map(Converter::convert)
                 .collect(Collectors.toList());

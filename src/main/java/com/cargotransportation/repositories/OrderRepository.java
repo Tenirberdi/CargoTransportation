@@ -4,6 +4,7 @@ import com.cargotransportation.constants.AddressType;
 import com.cargotransportation.constants.OrderStatus;
 import com.cargotransportation.dao.Order;
 import com.cargotransportation.dao.ProductType;
+import com.cargotransportation.dao.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,8 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByStatus(OrderStatus status);
+
+    List<Order> findByCarrier(User carrier);
 
     @Query("SELECT o FROM Order o " +
             "WHERE (:sourceCity IS NULL OR o.sourceAddress.city = :sourceCity) " +
