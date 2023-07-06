@@ -16,6 +16,8 @@ public interface OrderService {
 
     OrderDto confirmByOrderId(Long orderId);
 
+    OrderDto declineByOrderId(Long orderId);
+
     OrderDto acceptByOrderId(Long orderId);
     OrderDto setProductTakenDateById(Long orderId);
 

@@ -250,6 +250,25 @@ public class OrderServiceImpl implements OrderService {
         return Converter.convert(orderRepository.save(order));
     }
 
+
+    @Override
+    public OrderDto declineByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
+                "Order with id '" + orderId + "' not found!"
+        ));
+        isOrderRejected(order);
+
+        if(order.getStatus() != OrderStatus.TAKEN)
+        {
+            throw new IllegalStatusException(
+                    "Order with id '" + orderId + " is not took!",
+                    HttpStatus.CONFLICT);
+        }
+        order.setStatus(OrderStatus.WAITING);
+        order.setCarrier(null);
+        return Converter.convert(orderRepository.save(order));
+    }
+
     @Override
 //    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto acceptByOrderId(Long orderId) {
