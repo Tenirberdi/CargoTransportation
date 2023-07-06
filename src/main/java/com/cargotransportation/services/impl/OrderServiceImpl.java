@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto create(CreateOrderRequest request) {
         Address sourceAddress = Converter.convert(addressService.save(
                 CreateAddressRequest.builder()
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.read')")
+//    @PreAuthorize("hasAuthority('order.read')")
     public OrderDto findById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(()->new NotFoundException(
                 "Order with id '" + id + "' not found!"
@@ -174,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto takeByOrderId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -220,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto acceptByOrderId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -244,7 +244,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto setProductTakenDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -263,7 +263,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto setDeliveredDateById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -282,7 +282,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('order.edit')")
+//    @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto rejectById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
@@ -300,7 +300,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @PreAuthorize("hasAuthority('order.read')")
+//    @PreAuthorize("hasAuthority('order.read')")
     public List<OrderDto> findAllByStatus(OrderStatus status) {
         return orderRepository.findAll().stream().map(Converter::convert).collect(Collectors.toList());
     }
@@ -308,7 +308,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @PreAuthorize("hasAuthority('order.read')")
+//    @PreAuthorize("hasAuthority('order.read')")
     public List<OrderDto> findAllWithFilter(
             String sourceCity, String sourceState, String destinationCity, String destinationState,
             Integer minVolume, Integer maxVolume,

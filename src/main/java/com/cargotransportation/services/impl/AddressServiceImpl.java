@@ -19,7 +19,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
     @Override
-    @PreAuthorize("hasAuthority('address.edit')")
+//    @PreAuthorize("hasAuthority('address.edit')")
     public AddressDto save(CreateAddressRequest request) {
         Address address = Address.builder()
                 .city(request.getCity())

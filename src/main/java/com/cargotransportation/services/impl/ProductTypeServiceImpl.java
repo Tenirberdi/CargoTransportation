@@ -22,7 +22,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     private final ProductTypeRepository productTypeRepository;
 
     @Override
-    @PreAuthorize("hasAuthority('productType.read')")
+//    @PreAuthorize("hasAuthority('productType.read')")
     public ProductTypeDto findByName(String name) {
         ProductType productType = productTypeRepository.
                 findByName(name);
