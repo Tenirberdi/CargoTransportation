@@ -141,6 +141,14 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+    @Override
+    public List<OrderDto> getAllWaitingOrders() {
+        return orderRepository.findByStatus(OrderStatus.WAITING)
+                .stream()
+                .map(Converter::convert)
+                .collect(Collectors.toList());
+    }
+
     private int[] parseDuration(String duration){
         String[] durationParts = duration.split(":");
         int hours = Integer.parseInt(durationParts[0]);

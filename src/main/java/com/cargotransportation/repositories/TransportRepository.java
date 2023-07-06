@@ -1,5 +1,6 @@
 package com.cargotransportation.repositories;
 
+import com.cargotransportation.dao.CarrierCompany;
 import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dao.User;
 import com.cargotransportation.dto.FileInfo;
@@ -15,6 +16,8 @@ public interface TransportRepository extends JpaRepository<Transport, Long> {
 
 
     List<Transport> findAllByCarrierCompany_Id(Long carrierCompanyId);
+
+    List<Transport> findByCarrierIsNullAndCarrierCompany(CarrierCompany company);
 
 
 

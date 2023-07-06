@@ -1,6 +1,7 @@
 package com.cargotransportation.controllers;
 
 import com.cargotransportation.dao.CarrierCompany;
+import com.cargotransportation.dao.Role;
 import com.cargotransportation.dto.requests.CreateTransportRequest;
 import com.cargotransportation.dto.requests.UpdateCarrierCompanyRequest;
 import com.cargotransportation.services.AuthService;
@@ -23,6 +24,7 @@ public class CarrierCompanyController {
     private final TransportService transportService;
     private final CarrierCompanyService carrierCompanyService;
     private final AuthService authService;
+    private final UserService userService;
 
 
     @PostMapping("/transport")
@@ -53,4 +55,16 @@ public class CarrierCompanyController {
             @RequestBody UpdateCarrierCompanyRequest request){
         return new ResponseEntity<>(carrierCompanyService.updatePrices(request),HttpStatus.OK);
     }
+
+    @GetMapping("/carrier")
+    public ResponseEntity<?> getAllCarriers(){
+        return new ResponseEntity<>(userService.findAllByRoleAndTransportIsNull("ROLE_CARRIER"),HttpStatus.OK);
+    }
+
+
+    @GetMapping("/transport/free")
+    public ResponseEntity<?> getAllFreeTransports(){
+        return new ResponseEntity<>(transportService.findByCarrierIsNullAndCarrierCompany(),HttpStatus.OK);
+    }
+
 }

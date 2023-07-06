@@ -1,5 +1,6 @@
 package com.cargotransportation.services;
 
+import com.cargotransportation.dao.Role;
 import com.cargotransportation.dto.CarrierCompanyDto;
 import com.cargotransportation.dto.TransportDto;
 import com.cargotransportation.dto.UserDto;
@@ -18,5 +19,7 @@ public interface UserService {
     UserDto findByUsername(String username);
     List<TransportDto> getTransports();
     UserDto findUserByRoleAndId(String roleName,Long id);
+
+    List<UserDto> findAllByRoleAndTransportIsNull(String role);
 
 }

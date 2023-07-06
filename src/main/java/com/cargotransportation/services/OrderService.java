@@ -37,4 +37,6 @@ public interface OrderService {
 
     OrderPriceInfoResponse getPriceInfoByOrderId(Long orderId);
 
+    List<OrderDto> getAllWaitingOrders();
+
 }
