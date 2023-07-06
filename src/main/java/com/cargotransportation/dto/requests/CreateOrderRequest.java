@@ -33,7 +33,6 @@ public class CreateOrderRequest {
 
     private Integer volume;
     private String productType;
-    private Long price;
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
     private Double totalKm;

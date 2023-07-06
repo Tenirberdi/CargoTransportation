@@ -36,8 +36,6 @@ public class OrderController {
 
     @GetMapping("/filter")
     public ResponseEntity<?> findAllWithFilter(
-            @RequestParam(required = false) Long minPrice,
-            @RequestParam(required = false) Long maxPrice,
             @RequestParam(required = false) String sourceCity,
             @RequestParam(required = false) String sourceState,
             @RequestParam(required = false) String destinationCity,
@@ -49,7 +47,6 @@ public class OrderController {
             @RequestParam(required = false) String maxDate
     ) {
         List<OrderDto> filteredOrders = orderService.findAllWithFilter(
-                minPrice, maxPrice,
                 sourceCity, sourceState, destinationCity, destinationState,
                 minVolume, maxVolume,
                 productTypeName,

@@ -27,7 +27,6 @@ public interface OrderService {
     List<OrderDto> findAllByStatus(OrderStatus status);
 
     List<OrderDto> findAllWithFilter(
-            Long minPrice, Long maxPrice,
             String sourceCity, String sourceState,
             String destinationCity, String destinationState,
             Integer minVolume, Integer maxVolume,

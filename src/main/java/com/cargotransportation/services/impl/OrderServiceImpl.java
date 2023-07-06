@@ -74,7 +74,6 @@ public class OrderServiceImpl implements OrderService {
                 .destinationAddress(destinationAddress)
                 .volume(request.getVolume())
                 .productType(productType)
-                .price(request.getPrice())
                 .estimatedDeliveryDate(request.getEstimatedDeliveryDate())
                 .totalKm(request.getTotalKm())
                 .duration(request.getDuration())
@@ -294,7 +293,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @PreAuthorize("hasAuthority('order.read')")
     public List<OrderDto> findAllWithFilter(
-            Long minPrice, Long maxPrice,
             String sourceCity, String sourceState, String destinationCity, String destinationState,
             Integer minVolume, Integer maxVolume,
             String productTypeName,
@@ -302,7 +300,6 @@ public class OrderServiceImpl implements OrderService {
     ) {
         ProductType productType = productTypeName==null?null:Converter.convert(productTypeService.findByName(productTypeName));
         return orderRepository.filterOrders(
-                minPrice, maxPrice,
                         sourceCity, sourceState,
                         destinationCity,destinationState,
                         minVolume, maxVolume,

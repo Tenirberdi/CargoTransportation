@@ -17,9 +17,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByStatus(OrderStatus status);
 
     @Query("SELECT o FROM Order o " +
-            "WHERE (:minPrice IS NULL OR o.price >= :minPrice) " +
-            "AND (:maxPrice IS NULL OR o.price <= :maxPrice) " +
-            "AND (:sourceCity IS NULL OR o.sourceAddress.city = :sourceCity) " +
+            "WHERE (:sourceCity IS NULL OR o.sourceAddress.city = :sourceCity) " +
             "AND (:sourceState IS NULL OR o.sourceAddress.state = :sourceState) "+
             "AND (:destinationState IS NULL OR o.destinationAddress.state = :destinationState) "+
             "AND (:destinationCity IS NULL OR o.destinationAddress.city = :destinationCity) " +
@@ -30,8 +28,6 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             "AND (cast(:maxDate as timestamp) IS NULL OR o.estimatedDeliveryDate <= :maxDate)"
     )
     List<Order> filterOrders(
-            @Param("minPrice") Long minPrice,
-            @Param("maxPrice") Long maxPrice,
             @Param("sourceCity") String sourceCity,
             @Param("sourceState") String sourceState,
             @Param("destinationCity") String destinationCity,
@@ -41,7 +37,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             @Param("productType") ProductType productType,
             @Param("minDate") LocalDateTime minDate,
             @Param("maxDate") LocalDateTime maxDate
-//            ,
-//            @Param("addressType")AddressType addressType
             );
 }
