@@ -50,7 +50,7 @@ public class CarrierCompanyController {
         return new ResponseEntity<>(transportService.setCarrierByTransportIdCarrierId(transportId,carrierId),HttpStatus.OK);
     }
 
-    @PutMapping("/update-price-info")
+    @PostMapping("/update-price-info")
     public ResponseEntity<?> updateCompanyPrice(
             @RequestBody UpdateCarrierCompanyRequest request){
         return new ResponseEntity<>(carrierCompanyService.updatePrices(request),HttpStatus.OK);

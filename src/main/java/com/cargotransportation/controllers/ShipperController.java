@@ -18,12 +18,12 @@ public class ShipperController {
         return new ResponseEntity<>(orderService.findAllByShipper(), HttpStatus.OK);
     }
 
-    @PutMapping("/order/{orderId}/confirm")
+    @GetMapping("/order/{orderId}/confirm")
     public ResponseEntity<?> confirmOrderById(@PathVariable("orderId") Long orderId){
         return new ResponseEntity<>(orderService.confirmByOrderId(orderId),HttpStatus.OK);
     }
 
-    @PutMapping("/order/{orderId}/decline")
+    @GetMapping("/order/{orderId}/decline")
     public ResponseEntity<?> declineByOrderId(@PathVariable("orderId") Long orderId){
         return new ResponseEntity<>(orderService.declineByOrderId(orderId),HttpStatus.OK);
     }

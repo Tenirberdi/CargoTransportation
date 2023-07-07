@@ -37,7 +37,7 @@ public interface OrderService {
 
     OrderPriceInfoResponse getPriceInfoByOrderId(Long orderId);
 
-    List<OrderDto> getAllWaitingOrders();
+    List<OrderDto> getAllConfirmedOrders();
 
     List<OrderDto> findAllByShipper();
 
