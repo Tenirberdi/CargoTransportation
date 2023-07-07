@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user.read')")
+//    @PreAuthorize("hasAuthority('user.read')")
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "User with id " + id + " not found!"));
@@ -85,13 +85,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user.read')")
+//    @PreAuthorize("hasAuthority('user.read')")
     public UserDto findByUsername(String username) {
         return Converter.convert(userRepository.findByUsername(username));
     }
 
     @Override
-    @PreAuthorize("hasAuthority('user.read')")
+//    @PreAuthorize("hasAuthority('user.read')")
     public List<TransportDto> getTransports() {
         return transportRepository.findById(
                 findByUsername(authService.getCurrentUserUsername()).getId()

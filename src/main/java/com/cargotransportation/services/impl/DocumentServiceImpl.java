@@ -46,7 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('file.read')")
+//    @PreAuthorize("hasAuthority('file.read')")
     public List<FileInfoDto> getUserFiles(Long userId) {
         return documentRepository.getUsersFiles(userId).stream().map(fileInfo -> FileInfoDto.builder()
                 .name(fileInfo.getName())
@@ -54,7 +54,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('file.read')")
+//    @PreAuthorize("hasAuthority('file.read')")
     public List<FileInfoDto> getOrderFiles(Long orderId) {
         return documentRepository.getOrderFiles(orderId).stream().map(fileInfo -> FileInfoDto.builder()
                 .name(fileInfo.getName())
