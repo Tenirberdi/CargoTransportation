@@ -84,7 +84,6 @@ public class OrderServiceImpl implements OrderService {
 
         return Converter.convert(order);
     }
-
     @Override
     @PreAuthorize("hasAuthority('order.read')")
     public OrderDto findById(Long id) {
@@ -99,10 +98,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
         ));
-
-        if(order.getStatus() != OrderStatus.TAKEN)
-            throw new IllegalStatusException("Order with status id '" + orderId + "' is not taken"
-                ,HttpStatus.CONFLICT);
 
         User carrier = order.getCarrier();
         if(carrier != null){
@@ -142,8 +137,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAllWaitingOrders() {
-        return orderRepository.findByStatus(OrderStatus.WAITING)
+    public List<OrderDto> getAllConfirmedOrders() {
+        return orderRepository.findByStatus(OrderStatus.CONFIRMED)
                 .stream()
                 .map(Converter::convert)
                 .collect(Collectors.toList());
@@ -186,7 +181,6 @@ public class OrderServiceImpl implements OrderService {
 
         return new int[]{hours,minutes};
     }
-
     @Override
     @PreAuthorize("hasAuthority('order.edit')")
     public OrderDto takeByOrderId(Long orderId) {
@@ -218,12 +212,14 @@ public class OrderServiceImpl implements OrderService {
 
         double totalKmPrice = carrierCompany.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
         double totalVolumePrice = (carrierCompany.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
+        int percent = order.getOrderType()==OrderType.EXPRESS?carrierCompany.getPercentToExpress():carrierCompany.getPercentToStandard();
         totalPrice = totalKmPrice + totalVolumePrice;
-
-        totalPrice = order.getOrderType()==OrderType.EXPRESS?
-                totalPrice+(carrierCompany.getPercentToExpress()*totalPrice)
+        double totalOrderTypePrice = order.getOrderType()==OrderType.EXPRESS?
+                (carrierCompany.getPercentToExpress()*totalPrice/100)
                 :
-                totalPrice+(carrierCompany.getPercentToStandard()*totalPrice);
+                (carrierCompany.getPercentToStandard()*totalPrice/100);
+
+        totalPrice +=  totalOrderTypePrice;
 
         order.setTotalPrice(totalPrice);
 
@@ -246,6 +242,7 @@ public class OrderServiceImpl implements OrderService {
                     "Order with id '" + orderId + " is not took!",
                     HttpStatus.CONFLICT);
         }
+
         order.setStatus(OrderStatus.CONFIRMED);
         return Converter.convert(orderRepository.save(order));
     }
@@ -264,7 +261,8 @@ public class OrderServiceImpl implements OrderService {
                     "Order with id '" + orderId + " is not took!",
                     HttpStatus.CONFLICT);
         }
-        order.setStatus(OrderStatus.WAITING);
+
+        order.setStatus(OrderStatus.REJECTED);
         order.setCarrier(null);
         return Converter.convert(orderRepository.save(order));
     }
@@ -281,7 +279,6 @@ public class OrderServiceImpl implements OrderService {
                         authService.getCurrentUserUsername()
                 ).getId())
         );
-
         if(order.getStatus() != OrderStatus.CONFIRMED)
         {
             throw new IllegalStatusException(
@@ -337,9 +334,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
                 "Order with id '" + orderId + "' not found!"
         ));
-        if(order.getStatus() != OrderStatus.TAKEN) {
+        if(order.getStatus() != OrderStatus.CONFIRMED) {
             throw new IllegalStatusException(
-                    "Order has already been accepted!",
+                    "Order is not confirmed!",
                     HttpStatus.CONFLICT
             );
         }
