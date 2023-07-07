@@ -6,6 +6,7 @@ import com.cargotransportation.dao.*;
 import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateAddressRequest;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
+import com.cargotransportation.dto.requests.UpdateAddressRequest;
 import com.cargotransportation.dto.response.OrderPriceInfoResponse;
 import com.cargotransportation.exception.AuthException;
 import com.cargotransportation.exception.IllegalStatusException;
@@ -37,6 +38,19 @@ public class OrderServiceImpl implements OrderService {
     private final TransportRepository transportRepository;
     private final AuthService authService;
 
+
+    @Override
+    public OrderDto updateCurrentLocationByOrderId(Long orderId, UpdateAddressRequest request) {
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new NotFoundException(
+                "Order with id '" + orderId + "' not found!"
+        ));
+        Address currentLocation = Address.builder()
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .build();
+        order.setCurrentLocation(currentLocation);
+        return Converter.convert(orderRepository.save(order));
+    }
 
     @Override
     @PreAuthorize("hasAuthority('order.edit')")

@@ -1,6 +1,7 @@
 package com.cargotransportation.controllers;
 
 import com.cargotransportation.constants.OrderStatus;
+import com.cargotransportation.dto.requests.UpdateAddressRequest;
 import com.cargotransportation.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class CarrierController {
 
     private final OrderService orderService;
+
+    @PutMapping("/current-location/{orderId}/update")
+    public ResponseEntity<?> updateCurrentLocation(@PathVariable("orderId") Long orderId,@RequestBody UpdateAddressRequest request){
+        return new ResponseEntity<>(orderService.updateCurrentLocationByOrderId(orderId,request),HttpStatus.OK);
+    }
 
     @GetMapping("/order/{orderId}/take")
     public ResponseEntity<?> takeOrder(
