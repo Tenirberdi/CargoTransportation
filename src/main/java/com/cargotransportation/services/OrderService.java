@@ -3,6 +3,7 @@ package com.cargotransportation.services;
 import com.cargotransportation.constants.OrderStatus;
 import com.cargotransportation.dto.OrderDto;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
+import com.cargotransportation.dto.requests.UpdateAddressRequest;
 import com.cargotransportation.dto.response.OrderPriceInfoResponse;
 
 import java.time.LocalDateTime;
@@ -42,5 +43,7 @@ public interface OrderService {
     List<OrderDto> findAllByShipper();
 
     List<OrderDto> findAllByCarrierAndStatus(OrderStatus status);
+
+    OrderDto updateCurrentLocationByOrderId(Long orderId,UpdateAddressRequest request);
 
 }
