@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class User {
     @Column(name = "fio")
     private String fio;
 
-    @Column(name = "age")
-    private Integer age;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @Column(name = "address")
     private String address;

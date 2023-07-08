@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "carrier_companies")
-public class CarrierCompany extends User{
+@Table(name = "agents")
+public class Agent extends User{
 
     @Column(name = "company_name")
     private String companyName;
@@ -34,7 +34,7 @@ public class CarrierCompany extends User{
     @Column(name = "percent_to_standard")
     private int percentToStandard;
 
-    @OneToMany(mappedBy = "carrierCompany",cascade = CascadeType.MERGE)
-    private List<Transport> companyTransports = new ArrayList<>();
+    @OneToMany(mappedBy = "agent", cascade = CascadeType.MERGE)
+    private List<Transport> agentTransports = new ArrayList<>();
 
 }

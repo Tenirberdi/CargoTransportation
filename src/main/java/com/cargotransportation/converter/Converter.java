@@ -2,13 +2,6 @@ package com.cargotransportation.converter;
 
 import com.cargotransportation.dao.*;
 import com.cargotransportation.dto.*;
-import com.cargotransportation.repositories.CarrierCompanyRepository;
-import com.cargotransportation.services.CarrierCompanyService;
-import com.cargotransportation.services.TransportService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,7 +49,7 @@ public class Converter {
                 .capacityInTons(entity.getCapacityInTons())
                 .type(entity.getType())
                 .carrier(Converter.convert(entity.getCarrier()))
-                .carrierCompanyId(entity.getCarrierCompany()==null?null:entity.getCarrierCompany().getId())
+                .agent(entity.getAgent()==null?null:entity.getAgent().getId())
                 .build();
     }
 
@@ -121,7 +114,7 @@ public class Converter {
                 .createdAt(dto.getCreatedAt())
                 .isConfirmed(dto.isConfirmed())
                 .fio(dto.getFio())
-                .age(dto.getAge())
+                .birthDate(dto.getBirthDate())
                 .address(dto.getAddress())
                 .phone(dto.getPhone())
                 .build();
@@ -136,9 +129,25 @@ public class Converter {
                 .createdAt(entity.getCreatedAt())
                 .isConfirmed(entity.isConfirmed())
                 .fio(entity.getFio())
-                .age(entity.getAge())
+                .birthDate(entity.getBirthDate())
                 .address(entity.getAddress())
                 .phone(entity.getPhone())
+                .build();
+    }
+
+    public static CarrierDto convert(Carrier entity){
+        if(entity == null)  return null;
+        return CarrierDto.builder()
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .role(entity.getRole().getName())
+                .createdAt(entity.getCreatedAt())
+                .isConfirmed(entity.isConfirmed())
+                .fio(entity.getFio())
+                .birthDate(entity.getBirthDate())
+                .address(entity.getAddress())
+                .phone(entity.getPhone())
+                .agentId(entity.getAgent().getId())
                 .build();
     }
 
@@ -193,9 +202,9 @@ public class Converter {
                 .build();
     }
 
-    public static CarrierCompany convert(CarrierCompanyDto dto){
+    public static Agent convert(AgentDto dto){
         if(dto == null) return null;
-        return CarrierCompany.builder()
+        return Agent.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
                 .role(Role.builder().name(dto.getRole()).build())
@@ -203,14 +212,14 @@ public class Converter {
                 .isConfirmed(dto.isConfirmed())
                 .fio(dto.getFio())
                 .phone(dto.getPhone())
-                .age(dto.getAge())
+                .birthDate(dto.getBirthDate())
                 .address(dto.getAddress())
                 .companyAddress(dto.getCompanyAddressDto())
                 .companyName(dto.getCompanyName())
                 .percentToExpress(dto.getPercentToExpress())
                 .percentToStandard(dto.getPercentToStandard())
                 .pricePerKm(dto.getPricePerKm())
-                .companyTransports(dtosToEntities(dto.getCompanyTransports()))
+                .agentTransports(dtosToEntities(dto.getCompanyTransports()))
                 .pricePerLb(dto.getPricePerLb())
                 .build();
     }
@@ -225,23 +234,23 @@ public class Converter {
         return dtos.stream().map(Converter::convert).collect(Collectors.toList());
     }
 
-    public static CarrierCompanyDto convert(CarrierCompany entity){
+    public static AgentDto convert(Agent entity){
         if(entity == null) return null;
-        return CarrierCompanyDto.builder()
+        return AgentDto.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
                 .role(entity.getRole().getName())
                 .createdAt(entity.getCreatedAt())
                 .isConfirmed(entity.isConfirmed())
                 .fio(entity.getFio())
-                .age(entity.getAge())
+                .birthDate(entity.getBirthDate())
                 .address(entity.getAddress())
                 .phone(entity.getPhone())
                 .percentToExpress(entity.getPercentToExpress())
                 .percentToStandard(entity.getPercentToStandard())
                 .pricePerKm(entity.getPricePerKm())
                 .pricePerLb(entity.getPricePerLb())
-                .companyTransports(entitiesToDtos(entity.getCompanyTransports()))
+                .companyTransports(entitiesToDtos(entity.getAgentTransports()))
                 .companyName(entity.getCompanyName())
                 .companyAddressDto(entity.getCompanyAddress())
                 .build();

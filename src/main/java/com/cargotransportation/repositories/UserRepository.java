@@ -2,6 +2,8 @@ package com.cargotransportation.repositories;
 
 import com.cargotransportation.dao.Role;
 import com.cargotransportation.dao.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +15,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByUsername(String username);
     User findByRoleAndId(Role role, Long id);
-
     List<User> findByRoleAndTransportIsNull(Role role);
 }

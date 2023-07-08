@@ -1,7 +1,5 @@
 package com.cargotransportation.services;
 
-import com.cargotransportation.dao.CarrierCompany;
-import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dto.TransportDto;
 import com.cargotransportation.dto.requests.CreateTransportRequest;
 

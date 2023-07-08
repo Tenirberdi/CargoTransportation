@@ -1,28 +1,31 @@
 package com.cargotransportation.services.impl;
 
+import com.cargotransportation.constants.UserStatus;
 import com.cargotransportation.converter.Converter;
-import com.cargotransportation.dao.CarrierCompany;
+import com.cargotransportation.dao.Agent;
+import com.cargotransportation.dao.Carrier;
 import com.cargotransportation.dao.Role;
-import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dao.User;
-import com.cargotransportation.dto.CarrierCompanyDto;
+import com.cargotransportation.dto.AgentDto;
 import com.cargotransportation.dto.TransportDto;
 import com.cargotransportation.dto.UserDto;
-import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
+import com.cargotransportation.dto.requests.CreateAgentRequest;
 import com.cargotransportation.dto.requests.CreateCarrierRequest;
-import com.cargotransportation.dto.requests.CreateUserRequest;
+import com.cargotransportation.dto.requests.CreateShipperRequest;
+import com.cargotransportation.exception.DuplicateEntryException;
 import com.cargotransportation.exception.NotFoundException;
-import com.cargotransportation.repositories.CarrierCompanyRepository;
+import com.cargotransportation.repositories.AgentRepository;
+import com.cargotransportation.repositories.CarrierRepository;
 import com.cargotransportation.repositories.RoleRepository;
 import com.cargotransportation.repositories.TransportRepository;
 import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.AuthService;
-import com.cargotransportation.services.RoleService;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,46 +37,79 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CarrierRepository carrierRepository;
     private final TransportRepository transportRepository;
     private final AuthService authService;
-    private final CarrierCompanyRepository carrierCompanyRepository;
+    private final AgentRepository agentRepository;
 
     @Override
-    public Long save(UserDto userDto) {
-        if(ifUsernameExists(userDto.getUsername()))
-        {
-            throw new NotFoundException(
-                    "User with username '" + userDto.getUsername() + " is exists!");
+    public UserDto save(UserDto userDto) {
+        if(userRepository.findByUsername(userDto.getUsername()) != null) {
+            throw new DuplicateEntryException("Username is already taken");
         }
         userDto.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(Converter.convert(userDto)).getId();
+        User user = userRepository.save(Converter.convert(userDto));
+        return Converter.convert(user);
     }
 
     @Override
-    public Long save(CreateCarrierRequest request) {
+    public UserDto save(CreateCarrierRequest request) {
+        if(userRepository.findByUsername(request.getUsername()) != null) {
+            throw new DuplicateEntryException("Username is already taken");
+        }
+        User currentUser = authService.getCurrentUser();
+        User result;
+        if (currentUser != null && currentUser.getRole().getName().equals("ROLE_AGENT")) {
+            result = carrierRepository.save(Carrier.builder()
+                    .username(request.getUsername())
+                    .password(new BCryptPasswordEncoder().encode(request.getPassword()))
+                    .role(Role.builder().name("ROLE_CARRIER").build())
+                    .createdAt(LocalDateTime.now())
+                    .fio(request.getFio())
+                    .birthDate(request.getBirthDate())
+                    .address(request.getAddress())
+                    .phone(request.getPhone())
+                    .agent(agentRepository.findById(currentUser.getId()).get())
+                    .build());
+        } else {
+            result = userRepository.save(User.builder()
+                    .username(request.getUsername())
+                    .password(new BCryptPasswordEncoder().encode(request.getPassword()))
+                    .role(Role.builder().name("ROLE_CARRIER").build())
+                    .createdAt(LocalDateTime.now())
+                    .fio(request.getFio())
+                    .birthDate(request.getBirthDate())
+                    .address(request.getAddress())
+                    .phone(request.getPhone())
+                    .build());
+        }
+        return Converter.convert(result);
+    }
+
+    @Override
+    public UserDto save(CreateShipperRequest request) {
+        if(userRepository.findByUsername(request.getUsername()) != null) {
+            throw new DuplicateEntryException("Username is already taken");
+        }
         User user = userRepository.save(User.builder()
                 .username(request.getUsername())
                 .password(new BCryptPasswordEncoder().encode(request.getPassword()))
-                .role(Role.builder().name(request.getRole()).build())
+                .role(Role.builder().name("ROLE_SHIPPER").build())
                 .createdAt(LocalDateTime.now())
                 .fio(request.getFio())
-                .age(request.getAge())
+                .birthDate(request.getBirthDate())
                 .address(request.getAddress())
                 .phone(request.getPhone()).build());
-        return user.getId();
+
+        return Converter.convert(user);
     }
 
     @Override
-    public Long save(CreateUserRequest request) {
-        return userRepository.save(User.builder()
-                .username(request.getUsername())
-                .password(new BCryptPasswordEncoder().encode(request.getPassword()))
-                .role(Role.builder().name(request.getRole()).build())
-                .createdAt(LocalDateTime.now())
-                .fio(request.getFio())
-                .age(request.getAge())
-                .address(request.getAddress())
-                .phone(request.getPhone()).build()).getId();
+    @Transactional
+    public void changeUserConfirmedStatus(Long userId, UserStatus status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", userId)));
+        user.setConfirmed(status.getValue());
     }
 
     @Override
@@ -93,9 +129,8 @@ public class UserServiceImpl implements UserService {
     @Override
 //    @PreAuthorize("hasAuthority('user.read')")
     public List<TransportDto> getTransports() {
-        return transportRepository.findById(
-                findByUsername(authService.getCurrentUserUsername()).getId()
-        ).stream().map(Converter::convert).collect(Collectors.toList());
+        return transportRepository.findById(authService.getCurrentUser().getId())
+                .stream().map(Converter::convert).collect(Collectors.toList());
     }
 
     @Override
@@ -108,33 +143,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAllByRoleAndTransportIsNull(String role) {
-        return userRepository.findByRoleAndTransportIsNull(roleRepository.findByName(role))
+    public List<UserDto> getAgentCarries() {
+        return carrierRepository.findAllByAgent_Id(authService.getCurrentUser().getId())
                 .stream()
                 .map(Converter::convert)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CarrierCompanyDto save(CreateCarrierCompanyRequest request) {
-        Role role = roleRepository.findByName(request.getRole());
-        CarrierCompany carrierCompany = CarrierCompany.builder()
+    public AgentDto save(CreateAgentRequest request) {
+        Agent agent = Agent.builder()
                 .username(request.getUsername())
                 .password(new BCryptPasswordEncoder().encode(request.getPassword()))
-                .role(role)
+                .role(Role.builder().name("ROLE_AGENT").build())
                 .createdAt(LocalDateTime.now())
                 .fio(request.getFio())
-                .age(request.getAge())
+                .birthDate(request.getBirthDate())
                 .address(request.getAddress())
                 .phone(request.getPhone())
-
                 .companyName(request.getCompanyName())
-                .companyAddress(request.getCompanyAddressDto())
+                .companyAddress(request.getCompanyAddress())
                 .build();
-        return Converter.convert(carrierCompanyRepository.save(carrierCompany));
+        return Converter.convert(agentRepository.save(agent));
     }
 
-
+    public List<UserDto> getUsers() {
+        return userRepository.findAll().stream().map(Converter::convert).collect(Collectors.toList());
+    }
 
     private boolean ifUsernameExists(String username) {
         return userRepository.findByUsername(username) != null;

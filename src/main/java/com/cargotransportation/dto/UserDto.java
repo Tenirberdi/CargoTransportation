@@ -1,16 +1,12 @@
 package com.cargotransportation.dto;
 
-import com.cargotransportation.dao.Role;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @SuperBuilder
 @Data
@@ -23,7 +19,7 @@ public class UserDto {
     private LocalDateTime createdAt;
     private boolean isConfirmed;
     private String fio;
-    private Integer age;
+    private LocalDate birthDate;
     private String address;
     private String phone;
 }

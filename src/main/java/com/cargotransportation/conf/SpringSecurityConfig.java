@@ -48,7 +48,7 @@ public class SpringSecurityConfig {
             throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery("select username, password, true as enabled "
+                .usersByUsernameQuery("select username, password, is_confirmed as enabled "
                         + "from users "
                         + "where username = ?")
                 .authoritiesByUsernameQuery("select username, permission_id from roles_permissions rp" +

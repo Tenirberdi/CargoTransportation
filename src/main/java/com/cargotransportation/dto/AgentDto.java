@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarrierCompanyDto extends UserDto {
+public class AgentDto extends UserDto {
     private String companyName;
     private String companyAddressDto;
     private int pricePerLb;

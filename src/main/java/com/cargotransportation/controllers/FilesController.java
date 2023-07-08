@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.cargotransportation.constants.DocumentType;
+import com.cargotransportation.constants.ResponseState;
 import com.cargotransportation.dto.DocumentDto;
 import com.cargotransportation.dto.FileInfoDto;
 import com.cargotransportation.dto.UserDto;
+import com.cargotransportation.dto.response.Response;
 import com.cargotransportation.dto.response.ResponseMessage;
 import com.cargotransportation.exception.FileLoadException;
 import com.cargotransportation.services.DocumentService;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.cargotransportation.constants.ResponseState.SUCCESS;
+
 @RestController
 public class FilesController {
     private final FilesStorageService storageService;
@@ -39,10 +43,10 @@ public class FilesController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam MultipartFile file,
-                                                      @RequestParam DocumentType documentType,
-                                                      @RequestParam(required = false) Long userId,
-                                                      @RequestParam(required = false) Long orderId) {
+    public Response uploadFile(@RequestParam MultipartFile file,
+                               @RequestParam DocumentType documentType,
+                               @RequestParam(required = false) Long userId,
+                               @RequestParam(required = false) Long orderId) {
         try {
             UserDto user = userService.findById(userId);
             if(user == null) {
@@ -57,25 +61,27 @@ public class FilesController {
                     .type(documentType)
                     .orderId(orderId)
                     .userId(userId).build());
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
+            return new Response(SUCCESS, 0,
+                    new ResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
         } catch (Exception e) {
             throw new FileLoadException("Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage());
         }
     }
 
     @GetMapping("/users/{id}/files")
-    public List<FileInfoDto> getUserFiles(@PathVariable Long id) {
-        return storageService.loadUserFiles(id);
+    public Response getUserFiles(@PathVariable Long id) {
+        return new Response(SUCCESS, 0, storageService.loadUserFiles(id));
     }
 
     @GetMapping("/orders/{id}/files")
-    public List<FileInfoDto> getOrderFiles(@PathVariable Long id) {
-        return storageService.loadOrderFiles(id);
+    public Response getOrderFiles(@PathVariable Long id) {
+        return new Response(SUCCESS, 0,
+                storageService.loadOrderFiles(id));
     }
 
     @GetMapping("/document-types")
-    public List<DocumentType> getDocumentTypes() {
-        return documentService.getDocumentTypes();
+    public Response getDocumentTypes() {
+        return new Response(SUCCESS, 0, documentService.getDocumentTypes());
     }
 
     @GetMapping(value = "/files/{filename:.+}",

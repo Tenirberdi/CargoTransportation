@@ -1,11 +1,9 @@
 package com.cargotransportation.repositories;
 
-import com.cargotransportation.dao.CarrierCompany;
+import com.cargotransportation.dao.Agent;
 import com.cargotransportation.dao.Transport;
 import com.cargotransportation.dao.User;
-import com.cargotransportation.dto.FileInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,11 +11,9 @@ import java.util.List;
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
     Transport findByCarrier(User carrier);
+    List<Transport> findAllByAgent_Id(Long agentId);
 
-
-    List<Transport> findAllByCarrierCompany_Id(Long carrierCompanyId);
-
-    List<Transport> findByCarrierIsNullAndCarrierCompany(CarrierCompany company);
+    List<Transport> findByCarrierIsNullAndAgent(Agent agent);
 
 
 

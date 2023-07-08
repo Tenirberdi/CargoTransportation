@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="populate_db" author="tkambarov">
+        <sql>
+
+            insert into roles (name) values ('ROLE_CARRIER'), ('ROLE_SHIPPER'), ('ROLE_BROKER'), ('ROLE_AGENT');
+            insert into permissions (name) values ('order.read'), ('order.edit'), ('user.read'),
+                                                  ('user.edit'), ('file.read'), ('file.edit'),
+                                                  ('productType.read'), ('productType.edit'),
+                                                  ('address.read'), ('address.edit');
+            insert into product_types(name) values ('ELECTRONICS');
+            insert into roles_permissions (role_id, permission_id) values ('ROLE_CARRIER', 'user.read'),
+                                                                          ('ROLE_CARRIER', 'order.read'),
+                                                                          ('ROLE_CARRIER', 'order.edit'),                                                                                  ('ROLE_CARRIER', 'productType.edit'),                                                                                                           ('ROLE_CARRIER', 'productType.read'),                                                                                  ('ROLE_CARRIER', 'address.edit'),                                                                                                           ('ROLE_CARRIER', 'address.read'),
+                                                                          ('ROLE_CARRIER', 'file.read'),
+                                                                          ('ROLE_CARRIER', 'file.edit'),
+
+                                                                          ('ROLE_SHIPPER', 'user.read'),
+                                                                          ('ROLE_SHIPPER', 'order.read'),
+                                                                          ('ROLE_SHIPPER', 'order.edit'),
+                                                                          ('ROLE_SHIPPER', 'file.read'),
+                                                                          ('ROLE_SHIPPER', 'file.edit'),
+                                                                          ('ROLE_SHIPPER', 'productType.read'),
+                                                                          ('ROLE_SHIPPER', 'productType.edit'),
+                                                                          ('ROLE_SHIPPER', 'address.read'),
+                                                                          ('ROLE_SHIPPER', 'address.edit'),
+
+                                                                          ('ROLE_BROKER', 'user.read'),
+                                                                          ('ROLE_BROKER', 'user.edit'),
+                                                                          ('ROLE_BROKER', 'order.read'),
+                                                                          ('ROLE_BROKER', 'order.edit'),
+                                                                          ('ROLE_BROKER', 'file.read'),
+                                                                          ('ROLE_BROKER', 'file.edit'),
+                                                                          ('ROLE_BROKER', 'productType.read'),
+                                                                          ('ROLE_BROKER', 'productType.edit'),
+                                                                          ('ROLE_BROKER', 'address.read'),
+                                                                          ('ROLE_BROKER', 'address.edit'),
+
+                                                                          ('ROLE_AGENT', 'file.read'),
+                                                                          ('ROLE_AGENT', 'file.edit'),
+                                                                          ('ROLE_AGENT', 'productType.read'),
+                                                                          ('ROLE_AGENT', 'productType.edit'),
+                                                                          ('ROLE_AGENT', 'address.read'),
+                                                                          ('ROLE_AGENT', 'address.edit');
+
+            insert into users (address, birth_date, created_at, fio, is_confirmed, password, phone, username, role)
+            values ('Ahunbaeva 123', '2001-08-19', now(), 'Admin Admin', true, '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', '996996996996', 'broker', 'ROLE_BROKER');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

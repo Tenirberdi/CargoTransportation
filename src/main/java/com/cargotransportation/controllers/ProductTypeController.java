@@ -1,10 +1,14 @@
 package com.cargotransportation.controllers;
 
+import com.cargotransportation.constants.ResponseState;
+import com.cargotransportation.dto.response.Response;
 import com.cargotransportation.services.ProductTypeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.cargotransportation.constants.ResponseState.SUCCESS;
 
 @RestController
 @RequestMapping("/product-types")
@@ -14,13 +18,15 @@ public class ProductTypeController {
     private final ProductTypeService productTypeService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
-        return new ResponseEntity<>(productTypeService.findAll(), HttpStatus.OK);
+    public Response getAll(){
+        return new Response(SUCCESS, 0,
+                productTypeService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestParam("name") String name){
-        return new ResponseEntity<>(productTypeService.save(name),HttpStatus.OK);
+    public Response save(@RequestParam("name") String name){
+        return new Response(SUCCESS, 0,
+                productTypeService.save(name));
     }
 
 

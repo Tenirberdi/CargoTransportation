@@ -8,9 +8,8 @@ import com.cargotransportation.dto.requests.CreateAddressRequest;
 import com.cargotransportation.dto.requests.CreateOrderRequest;
 import com.cargotransportation.dto.requests.UpdateAddressRequest;
 import com.cargotransportation.dto.response.OrderPriceInfoResponse;
-import com.cargotransportation.exception.AuthException;
-import com.cargotransportation.exception.IllegalStatusException;
-import com.cargotransportation.exception.IsExistsException;
+import com.cargotransportation.exception.InvalidStatusException;
+import com.cargotransportation.exception.DuplicateEntryException;
 import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.OrderRepository;
 import com.cargotransportation.repositories.TransportRepository;
@@ -19,11 +18,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,18 +115,18 @@ public class OrderServiceImpl implements OrderService {
         User carrier = order.getCarrier();
         if(carrier != null){
             double totalPrice;
-            CarrierCompany carrierCompany = carrier.getTransport().getCarrierCompany();
-            if(carrierCompany == null){
+            Agent agent = carrier.getTransport().getAgent();
+            if(agent == null){
                 throw new NotFoundException("Carrier with id '" + carrier.getId() + "' does not have a company!");
             }
-            double totalKmPrice = carrierCompany.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
-            double totalVolumePrice = (carrierCompany.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
-            int percent = order.getOrderType()==OrderType.EXPRESS?carrierCompany.getPercentToExpress():carrierCompany.getPercentToStandard();
+            double totalKmPrice = agent.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
+            double totalVolumePrice = (agent.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
+            int percent = order.getOrderType()==OrderType.EXPRESS? agent.getPercentToExpress(): agent.getPercentToStandard();
             totalPrice = totalKmPrice + totalVolumePrice;
             double totalOrderTypePrice = order.getOrderType()==OrderType.EXPRESS?
-                    (carrierCompany.getPercentToExpress()*totalPrice/100)
+                    (agent.getPercentToExpress()*totalPrice/100)
                     :
-                    (carrierCompany.getPercentToStandard()*totalPrice/100);
+                    (agent.getPercentToStandard()*totalPrice/100);
 
             totalPrice +=  totalOrderTypePrice;
             int[] minutesAndHours = parseDuration(order.getDuration());
@@ -135,8 +134,8 @@ public class OrderServiceImpl implements OrderService {
                     .totalDistancePrice(totalKmPrice)
                     .totalVolumePrice(totalVolumePrice)
                     .totalByOrderType(totalOrderTypePrice)
-                    .tariffForDistance(carrierCompany.getPricePerKm())
-                    .tariffForVolume(carrierCompany.getPricePerLb())
+                    .tariffForDistance(agent.getPricePerKm())
+                    .tariffForVolume(agent.getPricePerLb())
                     .percentByOrderType(percent)
                     .hours(minutesAndHours[0])
                     .km(order.getTotalKm())
@@ -160,13 +159,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findAllByShipper() {
-        User shipper = Converter.convert(userService.findById(
-                userService.findByUsername(
-                        authService.getCurrentUserUsername()
-                ).getId())
-        );
+        User shipper = authService.getCurrentUser();
         if(!shipper.getRole().getName().equals("ROLE_SHIPPER")){
-            throw new AuthException("User is not shipper!", HttpStatus.OK);
+            throw new AuthenticationException("User is not shipper!") {
+            };
         }
         return orderRepository.findAllByShipperId(shipper.getId())
                 .stream()
@@ -176,11 +172,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findAllByCarrierAndStatus(OrderStatus status) {
-        User carrier = Converter.convert(userService.findById(
-                userService.findByUsername(
-                        authService.getCurrentUserUsername()
-                ).getId())
-        );
+        User carrier = authService.getCurrentUser();
 
         return orderRepository.findAllByCarrierAndStatus(carrier,status)
                 .stream()
@@ -204,16 +196,11 @@ public class OrderServiceImpl implements OrderService {
 
         isOrderRejected(order);
 
-        if(order.getCarrier() != null) throw new IsExistsException(
-                "Order with id '" + orderId + "' has already been taken",
-                HttpStatus.BAD_REQUEST
+        if(order.getCarrier() != null) throw new DuplicateEntryException(
+                "Order with id '" + orderId + "' has already been taken"
         );
 
-        User carrier = Converter.convert(userService.findById(
-                userService.findByUsername(
-                        authService.getCurrentUserUsername()
-                ).getId()
-        ));
+        User carrier = authService.getCurrentUser();
         order.setCarrier(carrier);
 
         double totalPrice;
@@ -222,16 +209,16 @@ public class OrderServiceImpl implements OrderService {
             throw new NotFoundException("Carrier with id' " + carrier.getId() + "' has not transport!");
         }
 
-        CarrierCompany carrierCompany = transport.getCarrierCompany();
+        Agent agent = transport.getAgent();
 
-        double totalKmPrice = carrierCompany.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
-        double totalVolumePrice = (carrierCompany.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
-        int percent = order.getOrderType()==OrderType.EXPRESS?carrierCompany.getPercentToExpress():carrierCompany.getPercentToStandard();
+        double totalKmPrice = agent.getPricePerKm() * (order.getTotalKm()==null?1.0:order.getTotalKm());
+        double totalVolumePrice = (agent.getPricePerLb() * (order.getVolume()==null?1.0:order.getVolume()));
+        int percent = order.getOrderType()==OrderType.EXPRESS? agent.getPercentToExpress(): agent.getPercentToStandard();
         totalPrice = totalKmPrice + totalVolumePrice;
         double totalOrderTypePrice = order.getOrderType()==OrderType.EXPRESS?
-                (carrierCompany.getPercentToExpress()*totalPrice/100)
+                (agent.getPercentToExpress()*totalPrice/100)
                 :
-                (carrierCompany.getPercentToStandard()*totalPrice/100);
+                (agent.getPercentToStandard()*totalPrice/100);
 
         totalPrice +=  totalOrderTypePrice;
 
@@ -252,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
 
         if(order.getStatus() != OrderStatus.TAKEN)
         {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + orderId + " is not took!",
                     HttpStatus.CONFLICT);
         }
@@ -271,7 +258,7 @@ public class OrderServiceImpl implements OrderService {
 
         if(order.getStatus() != OrderStatus.TAKEN)
         {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + orderId + " is not took!",
                     HttpStatus.CONFLICT);
         }
@@ -288,14 +275,10 @@ public class OrderServiceImpl implements OrderService {
                 "Order with id '" + orderId + "' not found!"
         ));
         isOrderRejected(order);
-        User user = Converter.convert(userService.findById(
-                userService.findByUsername(
-                        authService.getCurrentUserUsername()
-                ).getId())
-        );
+        User user = authService.getCurrentUser();
         if(order.getStatus() != OrderStatus.CONFIRMED)
         {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + orderId + " is not confirmed by shipper!",
                     HttpStatus.CONFLICT);
         }
@@ -313,7 +296,7 @@ public class OrderServiceImpl implements OrderService {
         isOrderRejected(order);
         if(order.getStatus() != OrderStatus.ACCEPTED)
         {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + orderId + " is not accepted!",
                     HttpStatus.CONFLICT);
         }
@@ -332,7 +315,7 @@ public class OrderServiceImpl implements OrderService {
         isOrderRejected(order);
         if(order.getStatus() != OrderStatus.SHIPPED)
         {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + orderId + " is not shipped!",
                     HttpStatus.CONFLICT);
         }
@@ -349,7 +332,7 @@ public class OrderServiceImpl implements OrderService {
                 "Order with id '" + orderId + "' not found!"
         ));
         if(order.getStatus() != OrderStatus.CONFIRMED) {
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order is not confirmed!",
                     HttpStatus.CONFLICT
             );
@@ -393,7 +376,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void isOrderRejected(Order o){
         if(o.getStatus() == OrderStatus.REJECTED){
-            throw new IllegalStatusException(
+            throw new InvalidStatusException(
                     "Order with id '" + o.getId() + " is rejected!",
                     HttpStatus.CONFLICT
             );

@@ -1,12 +1,13 @@
 package com.cargotransportation.controllers;
 
+import com.cargotransportation.constants.UserStatus;
+import com.cargotransportation.dto.response.Response;
 import com.cargotransportation.services.OrderService;
 import com.cargotransportation.services.UserService;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.cargotransportation.constants.ResponseState.SUCCESS;
 
 @RestController
 @RequestMapping("/brokers")
@@ -14,25 +15,39 @@ import org.springframework.web.bind.annotation.*;
 public class BrokerController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
-    @GetMapping("/order/{orderId}/accept")
-    public ResponseEntity<?> acceptOrderById(
+    @PutMapping("/order/{orderId}/accept")
+    public Response acceptOrderById(
             @PathVariable("orderId") Long orderId)
     {
-        if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(orderService.acceptByOrderId(orderId),HttpStatus.OK);
+        return new Response(SUCCESS, 0, orderService.acceptByOrderId(orderId));
     }
 
-    @GetMapping("/order/{orderId}/reject")
-    public ResponseEntity<?> rejectOrderById(@PathVariable("orderId") Long orderId){
-        if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(orderService.rejectById(orderId),HttpStatus.OK);
+    @PutMapping("/order/{orderId}/reject")
+    public Response rejectOrderById(@PathVariable("orderId") Long orderId){
+//        if(orderId == null || orderId < 1) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new Response(SUCCESS, 0, orderService.rejectById(orderId));
     }
 
     @GetMapping("/order")
-    public ResponseEntity<?> getAllConfirmedOrders(){
-        return new ResponseEntity<>(orderService.getAllConfirmedOrders(),HttpStatus.OK);
+    public Response getAllConfirmedOrders(){
+        return new Response(SUCCESS, 0, orderService.getAllConfirmedOrders());
     }
+
+    @GetMapping("/users")
+    public Response getUsers(){
+        return new Response(SUCCESS, 0, userService.getUsers());
+    }
+
+    @PutMapping("/users/{id}/{status}")
+    public Response changeUserConfirmStatus(@PathVariable Long id, @PathVariable UserStatus status) {
+        userService.changeUserConfirmedStatus(id, status);
+        return new Response(SUCCESS, 0);
+    }
+
+
 
 }

@@ -20,5 +20,5 @@ public class TransportDto {
     @Enumerated(value = EnumType.STRING)
     private TransportType type;
     private UserDto carrier;
-    private Long carrierCompanyId;
+    private Long agent;
 }

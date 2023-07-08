@@ -36,8 +36,8 @@ public class Transport {
 
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "company_id")
-    private CarrierCompany carrierCompany;
+    @JoinColumn(name = "agent_id")
+    private Agent agent;
 
 
 }

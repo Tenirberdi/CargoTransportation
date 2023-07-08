@@ -1,20 +1,19 @@
 package com.cargotransportation.controllers;
 
-import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
+import com.cargotransportation.dto.requests.CreateAgentRequest;
 import com.cargotransportation.dto.requests.CreateCarrierRequest;
-import com.cargotransportation.dto.requests.CreateUserRequest;
+import com.cargotransportation.dto.requests.CreateShipperRequest;
 import com.cargotransportation.dto.requests.SignInRequest;
+import com.cargotransportation.dto.response.Response;
 import com.cargotransportation.dto.response.SignInResponse;
 import com.cargotransportation.dto.response.SignUpResponse;
 import com.cargotransportation.services.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import static com.cargotransportation.constants.ResponseState.SUCCESS;
 
 @RestController
 public class AuthController {
@@ -32,28 +31,32 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    private SignInResponse authorize(@RequestBody SignInRequest signInRequest) {
-        return SignInResponse.builder()
-                .token(authService.authorize(signInRequest.getUsername(), signInRequest.getPassword())).build();
+    private Response authorize(@RequestBody SignInRequest signInRequest) {
+        return new Response(SUCCESS,0,
+                SignInResponse.builder()
+                        .token(authService.authorize(signInRequest.getUsername(),
+                        signInRequest.getPassword())).build());
     }
 
-    @GetMapping("/roles")
-    private List<String> getRoles() {
-        return roleService.getRoles();
+//    @GetMapping("/roles")
+    private Response getRoles() {
+        return new Response(SUCCESS, 0, roleService.getRoles());
     }
 
     @PostMapping("/sign-up/carrier")
-    private SignUpResponse registerShipper(@RequestBody CreateCarrierRequest request) {
-        return SignUpResponse.builder().id(userService.save(request)).build();
+    private Response registerShipper(@RequestBody CreateCarrierRequest request) {
+        return new Response(SUCCESS, 0,
+                userService.save(request));
     }
 
     @PostMapping("/sign-up/shipper")
-    private SignUpResponse registerCarrier(@RequestBody CreateUserRequest request) {
-        return SignUpResponse.builder().id(userService.save(request)).build();
+    private Response registerCarrier(@RequestBody CreateShipperRequest request) {
+        return new Response(SUCCESS, 0,
+                userService.save(request));
     }
 
-    @PostMapping("/sign-up/company-owner")
-    public ResponseEntity<?> save(@RequestBody CreateCarrierCompanyRequest request){
-        return new ResponseEntity<>(userService.save(request), HttpStatus.OK);
+    @PostMapping("/sign-up/agent")
+    public Response save(@RequestBody CreateAgentRequest request){
+        return new Response(SUCCESS, 0, userService.save(request));
     }
 }

@@ -3,13 +3,12 @@ package com.cargotransportation.services.impl;
 import com.cargotransportation.converter.Converter;
 import com.cargotransportation.dao.ProductType;
 import com.cargotransportation.dto.ProductTypeDto;
-import com.cargotransportation.exception.IsExistsException;
+import com.cargotransportation.exception.DuplicateEntryException;
 import com.cargotransportation.exception.NotFoundException;
 import com.cargotransportation.repositories.ProductTypeRepository;
 import com.cargotransportation.services.ProductTypeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,9 +48,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         if(productType == null){
             return Converter.convert(productTypeRepository.save(new ProductType(name)));
         }
-        throw new IsExistsException(
-                "Product type with name '" + name + "' is exists!",
-                HttpStatus.CONFLICT
+        throw new DuplicateEntryException(
+                "Product type with name '" + name + "' is exists!"
         );
     }
 }

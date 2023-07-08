@@ -1,30 +1,28 @@
 package com.cargotransportation.dto.requests;
 
-import com.cargotransportation.dto.AddressDto;
-import com.cargotransportation.dto.TransportDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCarrierCompanyRequest {
+public class CreateAgentRequest {
 
     private String username;
     private String password;
-    private String role;
     private String fio;
     private String address;
     private String phone;
-    private Integer age;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 
     private String companyName;
-    private String companyAddressDto;
+    private String companyAddress;
 
 }

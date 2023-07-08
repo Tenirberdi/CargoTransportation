@@ -1,10 +1,12 @@
 package com.cargotransportation.dto.requests;
 
-import com.cargotransportation.constants.TransportType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Builder
 @Data
@@ -13,9 +15,9 @@ import lombok.NoArgsConstructor;
 public class CreateCarrierRequest {
     private String username;
     private String password;
-    private String role;
-    private String fio;
     private String address;
     private String phone;
-    private Integer age;
+    private String fio;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 }

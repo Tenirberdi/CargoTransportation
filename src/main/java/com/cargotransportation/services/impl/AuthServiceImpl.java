@@ -1,27 +1,27 @@
 package com.cargotransportation.services.impl;
 
-import com.cargotransportation.converter.Converter;
-import com.cargotransportation.dao.CarrierCompany;
-import com.cargotransportation.dao.Role;
 import com.cargotransportation.dao.User;
-import com.cargotransportation.dto.CarrierCompanyDto;
-import com.cargotransportation.dto.requests.CreateCarrierCompanyRequest;
-import com.cargotransportation.repositories.CarrierCompanyRepository;
 import com.cargotransportation.repositories.UserRepository;
 import com.cargotransportation.services.AuthService;
-import org.springframework.security.access.AccessDeniedException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    @PersistenceContext
+    private EntityManager em;
     private final UserRepository userRepository;
 
     private static final BCryptPasswordEncoder passwordEcorder = new BCryptPasswordEncoder();
@@ -38,15 +38,20 @@ public class AuthServiceImpl implements AuthService {
     private Boolean doPasswordsMatch(String rawPassword,String encodedPassword) {
         return passwordEcorder.matches(rawPassword, encodedPassword);
     }
-    @Override
-    public String getCurrentUserUsername() {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user.getUsername();
-    }
 
-    public UserDetails getCurrentUser(){
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user;
+    @Override
+    public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = userRepository.findByUsername(userDetails.getUsername());
+            em.detach(user);
+            user.setPassword("");
+            return user;
+        } else {
+            return null;
+        }
+
     }
 
     @Override
